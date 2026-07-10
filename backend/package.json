@@ -1,0 +1,10 @@
+{
+  "name": "engineer-movement-report-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.620.2",
+    "@aws-sdk/lib-dynamodb": "^3.620.2"
+  }
+}

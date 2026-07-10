@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In | Engineer Movement Report</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-row">
+        <div>
+          <p class="eyebrow">Multi-tenant field service reporting</p>
+          <h1>Welcome back</h1>
+          <p class="subtitle">Sign in to view your engineer profile and daily movement report history.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="auth-link" href="index.html">Reports</a>
+          <a class="auth-link" href="profile.html">Profile</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="auth-shell">
+      <section class="auth-card">
+        <h2>Login</h2>
+        <p class="muted">Demo access: amina@tenant.com / password123</p>
+        <form id="loginForm">
+          <label>
+            Email address
+            <input type="email" id="loginEmail" placeholder="you@company.com" required />
+          </label>
+
+          <label>
+            Password
+            <input type="password" id="loginPassword" placeholder="Enter your password" required />
+          </label>
+
+          <button type="submit">Sign In</button>
+        </form>
+        <p id="loginMessage" class="status" aria-live="polite"></p>
+        <p class="muted">No account yet? <a href="register.html">Create one</a>.</p>
+      </section>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

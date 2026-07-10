@@ -1,0 +1,342 @@
+const form = document.getElementById('movementForm');
+const entriesList = document.getElementById('entriesList');
+const clearBtn = document.getElementById('clearBtn');
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
+const profileForm = document.getElementById('profileForm');
+const resetPasswordBtn = document.getElementById('resetPasswordBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const loginMessage = document.getElementById('loginMessage');
+const profileMessage = document.getElementById('profileMessage');
+const registerMessage = document.getElementById('registerMessage');
+const storageKey = 'engineer-movement-reports';
+const authKey = 'engineer-user-session';
+const profileKey = 'engineer-user-profile';
+const usersKey = 'engineer-users';
+
+function getReportsKey() {
+  const session = getSession();
+  return session && session.email ? `${storageKey}:${session.email}` : storageKey;
+}
+
+function getEntries() {
+  const reportsKey = getReportsKey();
+
+  try {
+    const currentEntries = localStorage.getItem(reportsKey);
+    if (currentEntries) {
+      return JSON.parse(currentEntries);
+    }
+
+    const legacyEntries = localStorage.getItem(storageKey);
+    if (legacyEntries) {
+      localStorage.setItem(reportsKey, legacyEntries);
+      return JSON.parse(legacyEntries);
+    }
+
+    return [];
+  } catch (error) {
+    console.error('Unable to read entries:', error);
+    return [];
+  }
+}
+
+function saveEntries(entries) {
+  localStorage.setItem(getReportsKey(), JSON.stringify(entries));
+}
+
+async function syncReportToApi(entry) {
+  const apiBaseUrl = window.API_BASE_URL || '';
+  if (!apiBaseUrl) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(`${apiBaseUrl}/reports`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenantId: window.DEFAULT_TENANT_ID,
+        userEmail: getSession()?.email || 'unknown@example.com',
+        ...entry,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('API sync failed');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.warn('Falling back to local storage:', error);
+    return null;
+  }
+}
+
+function getProfile() {
+  try {
+    return JSON.parse(localStorage.getItem(profileKey) || '{}');
+  } catch (error) {
+    console.error('Unable to read profile:', error);
+    return {};
+  }
+}
+
+function saveProfile(profile) {
+  localStorage.setItem(profileKey, JSON.stringify(profile));
+}
+
+function getSession() {
+  try {
+    return JSON.parse(localStorage.getItem(authKey) || 'null');
+  } catch (error) {
+    console.error('Unable to read session:', error);
+    return null;
+  }
+}
+
+function saveSession(session) {
+  localStorage.setItem(authKey, JSON.stringify(session));
+}
+
+function clearSession() {
+  localStorage.removeItem(authKey);
+  localStorage.removeItem(profileKey);
+}
+
+function getUsers() {
+  try {
+    return JSON.parse(localStorage.getItem(usersKey) || '[]');
+  } catch (error) {
+    console.error('Unable to read users:', error);
+    return [];
+  }
+}
+
+function saveUsers(users) {
+  localStorage.setItem(usersKey, JSON.stringify(users));
+}
+
+function renderEntries() {
+  if (!entriesList) return;
+
+  const session = getSession();
+  if (!session) {
+    entriesList.innerHTML = '<div class="empty">Please sign in to create and view movement reports.</div>';
+    return;
+  }
+
+  const entries = getEntries();
+
+  if (!entries.length) {
+    entriesList.innerHTML = '<div class="empty">No movement reports saved yet.</div>';
+    return;
+  }
+
+  entriesList.innerHTML = entries
+    .map(
+      (entry) => `
+        <article class="entry">
+          <h3>${entry.companyName}</h3>
+          <p><strong>Date:</strong> ${entry.date}</p>
+          <p><strong>Location:</strong> ${entry.location}</p>
+          <p><strong>Transport:</strong> ${entry.transportType}</p>
+          <p><strong>Machine:</strong> ${entry.machineType}</p>
+          <p><strong>Service:</strong> ${entry.serviceRendered}</p>
+        </article>
+      `
+    )
+    .join('');
+}
+
+function renderProfilePage() {
+  const session = getSession();
+  const profile = getProfile();
+
+  if (!document.getElementById('profileName')) return;
+
+  if (!session) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const displayName = profile.fullName || session.name || 'Engineer User';
+  const displayEmail = profile.emailAddress || session.email || 'user@company.com';
+
+  const nameElement = document.getElementById('profileName');
+  const emailElement = document.getElementById('profileEmail');
+  const fullNameField = document.getElementById('fullName');
+  const departmentField = document.getElementById('department');
+  const idCardField = document.getElementById('idCardNumber');
+  const emailField = document.getElementById('emailAddress');
+
+  if (nameElement) nameElement.textContent = displayName;
+  if (emailElement) emailElement.textContent = displayEmail;
+  if (fullNameField) fullNameField.value = profile.fullName || '';
+  if (departmentField) departmentField.value = profile.department || '';
+  if (idCardField) idCardField.value = profile.idCardNumber || '';
+  if (emailField) emailField.value = displayEmail;
+}
+
+function handleLogin(event) {
+  event.preventDefault();
+
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const users = getUsers();
+  const user = users.find((entry) => entry.emailAddress === email);
+
+  if (email === 'amina@tenant.com' && password === 'password123') {
+    const session = { name: 'Amina Yusuf', email };
+    const profile = {
+      fullName: 'Amina Yusuf',
+      department: 'Maintenance Engineering',
+      idCardNumber: 'ENG-1024',
+      emailAddress: email,
+    };
+
+    saveSession(session);
+    saveProfile(profile);
+    if (loginMessage) loginMessage.textContent = 'Login successful. Redirecting...';
+    window.location.href = 'profile.html';
+  } else if (user && user.password === password) {
+    const session = { name: user.fullName, email: user.emailAddress };
+    saveSession(session);
+    saveProfile({
+      fullName: user.fullName,
+      department: user.department,
+      idCardNumber: user.idCardNumber,
+      emailAddress: user.emailAddress,
+    });
+    if (loginMessage) loginMessage.textContent = 'Login successful. Redirecting...';
+    window.location.href = 'profile.html';
+  } else {
+    if (loginMessage) loginMessage.textContent = 'Invalid email or password.';
+  }
+}
+
+function handleRegister(event) {
+  event.preventDefault();
+
+  const fullName = document.getElementById('registerFullName').value.trim();
+  const department = document.getElementById('registerDepartment').value.trim();
+  const idCardNumber = document.getElementById('registerIdCardNumber').value.trim();
+  const emailAddress = document.getElementById('registerEmail').value.trim();
+  const password = document.getElementById('registerPassword').value;
+  const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+  if (password.length < 6) {
+    if (registerMessage) registerMessage.textContent = 'Password must be at least 6 characters.';
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    if (registerMessage) registerMessage.textContent = 'Passwords do not match.';
+    return;
+  }
+
+  const users = getUsers();
+  const existingUser = users.find((user) => user.emailAddress === emailAddress);
+
+  if (existingUser) {
+    if (registerMessage) registerMessage.textContent = 'An account with this email already exists.';
+    return;
+  }
+
+  const newUser = {
+    fullName,
+    department,
+    idCardNumber,
+    emailAddress,
+    password,
+  };
+
+  users.push(newUser);
+  saveUsers(users);
+  saveSession({ name: fullName, email: emailAddress });
+  saveProfile({ fullName, department, idCardNumber, emailAddress });
+
+  if (registerMessage) registerMessage.textContent = 'Account created successfully. Redirecting...';
+  window.location.href = 'profile.html';
+}
+
+function handleProfileUpdate(event) {
+  event.preventDefault();
+
+  const profile = {
+    fullName: document.getElementById('fullName').value.trim(),
+    department: document.getElementById('department').value.trim(),
+    idCardNumber: document.getElementById('idCardNumber').value.trim(),
+    emailAddress: document.getElementById('emailAddress').value.trim(),
+  };
+
+  saveProfile(profile);
+  if (profileMessage) profileMessage.textContent = 'Profile updated successfully.';
+  renderProfilePage();
+}
+
+function handleResetPassword() {
+  if (profileMessage) profileMessage.textContent = 'Password reset link sent to your email.';
+}
+
+function handleLogout() {
+  clearSession();
+  window.location.href = 'login.html';
+}
+
+if (form) {
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    if (!getSession()) {
+      entriesList.innerHTML = '<div class="empty">Please sign in before saving a report.</div>';
+      return;
+    }
+
+    const entry = {
+      id: Date.now(),
+      date: document.getElementById('date').value,
+      companyName: document.getElementById('companyName').value.trim(),
+      location: document.getElementById('location').value.trim(),
+      transportType: document.getElementById('transportType').value,
+      machineType: document.getElementById('machineType').value.trim(),
+      serviceRendered: document.getElementById('serviceRendered').value.trim(),
+    };
+
+    const entries = [entry, ...getEntries()];
+    saveEntries(entries);
+    await syncReportToApi(entry);
+    renderEntries();
+    form.reset();
+  });
+}
+
+if (clearBtn) {
+  clearBtn.addEventListener('click', () => {
+    saveEntries([]);
+    renderEntries();
+  });
+}
+
+if (loginForm) {
+  loginForm.addEventListener('submit', handleLogin);
+}
+
+if (registerForm) {
+  registerForm.addEventListener('submit', handleRegister);
+}
+
+if (profileForm) {
+  profileForm.addEventListener('submit', handleProfileUpdate);
+}
+
+if (resetPasswordBtn) {
+  resetPasswordBtn.addEventListener('click', handleResetPassword);
+}
+
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', handleLogout);
+}
+
+renderEntries();
+renderProfilePage();

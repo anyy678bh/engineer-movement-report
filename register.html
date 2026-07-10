@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register | Engineer Movement Report</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-row">
+        <div>
+          <p class="eyebrow">Multi-tenant field service reporting</p>
+          <h1>Create your account</h1>
+          <p class="subtitle">Register a new engineer account and start submitting movement reports.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="auth-link" href="index.html">Reports</a>
+          <a class="auth-link" href="login.html">Login</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="auth-shell">
+      <section class="auth-card">
+        <h2>Register</h2>
+        <p class="muted">Create a new account for your engineering team.</p>
+        <form id="registerForm">
+          <label>
+            Full name
+            <input type="text" id="registerFullName" placeholder="Jane Doe" required />
+          </label>
+
+          <label>
+            Department
+            <input type="text" id="registerDepartment" placeholder="Maintenance Engineering" required />
+          </label>
+
+          <label>
+            ID card number (optional)
+            <input type="text" id="registerIdCardNumber" placeholder="Optional" />
+          </label>
+
+          <label>
+            Email address
+            <input type="email" id="registerEmail" placeholder="you@company.com" required />
+          </label>
+
+          <label>
+            Password
+            <input type="password" id="registerPassword" placeholder="At least 6 characters" required />
+          </label>
+
+          <label>
+            Confirm password
+            <input type="password" id="registerConfirmPassword" placeholder="Re-enter password" required />
+          </label>
+
+          <button type="submit">Create Account</button>
+        </form>
+        <p id="registerMessage" class="status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

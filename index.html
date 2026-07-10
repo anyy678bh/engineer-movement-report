@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Engineer Movement Report</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-row">
+        <div>
+          <p class="eyebrow">Multi-tenant field service reporting</p>
+          <h1>Engineer Movement Report</h1>
+          <p class="subtitle">
+            Capture each daily engineering movement in a simple, structured workflow.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <a class="auth-link" href="login.html">Login</a>
+          <a class="auth-link" href="profile.html">Profile</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="card">
+        <h2>Daily Movement Form</h2>
+        <form id="movementForm">
+          <label>
+            Date
+            <input type="date" id="date" required />
+          </label>
+
+          <label>
+            Company Name Attended
+            <input type="text" id="companyName" placeholder="e.g. Acme Industries" required />
+          </label>
+
+          <label>
+            Location
+            <input type="text" id="location" placeholder="Site or city" required />
+          </label>
+
+          <label>
+            Transportation Type
+            <select id="transportType" required>
+              <option value="">Select transportation</option>
+              <option>Public Transport</option>
+              <option>Company Vehicle</option>
+            </select>
+          </label>
+
+          <label>
+            Type of Machine Repaired
+            <input type="text" id="machineType" placeholder="Pump, generator, switchboard" required />
+          </label>
+
+          <label>
+            Service Rendered
+            <textarea id="serviceRendered" rows="4" placeholder="Describe the work completed" required></textarea>
+          </label>
+
+          <button type="submit">Save Report</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <h2>Recent Entries</h2>
+          <button id="clearBtn" class="ghost" type="button">Clear</button>
+        </div>
+        <div id="entriesList" class="entries"></div>
+      </section>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
