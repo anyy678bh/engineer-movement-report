@@ -239,6 +239,53 @@ function buildEntryMarkup(entry) {
   `;
 }
 
+async function renderCompanyChart() {
+  const chart = document.getElementById('companyChart');
+  if (!chart) return;
+
+  const { items = [] } = await loadReportsFromApi();
+  const localEntries = getEntries();
+  const sourceEntries = items.length ? items : localEntries;
+
+  const counts = sourceEntries.reduce((accumulator, entry) => {
+    const company = (entry.companyName || entry.companyNameAttended || '').trim();
+    if (!company) {
+      return accumulator;
+    }
+
+    accumulator[company] = (accumulator[company] || 0) + 1;
+    return accumulator;
+  }, {});
+
+  const sortedEntries = Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  if (!sortedEntries.length) {
+    chart.innerHTML = '<div class="empty">No company activity yet.</div>';
+    return;
+  }
+
+  const maxValue = Math.max(...sortedEntries.map(([, count]) => count));
+
+  chart.innerHTML = sortedEntries
+    .map(([company, count]) => {
+      const width = Math.max(18, (count / maxValue) * 100);
+      return `
+        <div class="chart-row">
+          <div class="chart-labels">
+            <span>${company}</span>
+            <strong>${count}</strong>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width: ${width}%"></div>
+          </div>
+        </div>
+      `;
+    })
+    .join('');
+}
+
 async function renderEntries() {
   if (!entriesList) return;
 
@@ -490,6 +537,7 @@ if (form) {
     saveEntries(entries);
     const synced = await syncReportToApi(entry);
     renderEntries();
+    await renderCompanyChart();
     form.reset();
 
     if (synced) {
@@ -528,5 +576,6 @@ if (logoutBtn) {
 }
 
 renderEntries();
+renderCompanyChart();
 renderRecentEntriesPage();
 renderProfilePage();
