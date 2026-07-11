@@ -268,22 +268,26 @@ async function renderCompanyChart() {
 
   const maxValue = Math.max(...sortedEntries.map(([, count]) => count));
 
-  chart.innerHTML = sortedEntries
-    .map(([company, count]) => {
-      const width = Math.max(18, (count / maxValue) * 100);
-      return `
-        <div class="chart-row">
-          <div class="chart-labels">
-            <span>${company}</span>
-            <strong>${count}</strong>
-          </div>
-          <div class="bar-track">
-            <div class="bar-fill" style="width: ${width}%"></div>
-          </div>
-        </div>
-      `;
-    })
-    .join('');
+  chart.innerHTML = `
+    <div class="bar-chart">
+      ${sortedEntries
+        .map(([company, count]) => {
+          const height = Math.max(18, (count / maxValue) * 100);
+          return `
+            <div class="bar-item">
+              <div class="bar-wrapper">
+                <div class="bar-fill" style="height: ${height}%"></div>
+              </div>
+              <div class="bar-meta">
+                <span>${company}</span>
+                <strong>${count}</strong>
+              </div>
+            </div>
+          `;
+        })
+        .join('')}
+    </div>
+  `;
 }
 
 async function renderEntries() {

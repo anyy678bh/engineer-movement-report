@@ -349,36 +349,53 @@ button:hover {
   gap: 0.7rem;
 }
 
-.chart-row {
+.bar-chart {
   display: grid;
-  gap: 0.35rem;
-}
-
-.chart-labels {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
   gap: 0.75rem;
-  font-size: 0.95rem;
+  align-items: end;
+  min-height: 190px;
 }
 
-.chart-labels strong {
-  color: var(--accent);
+.bar-item {
+  display: grid;
+  gap: 0.45rem;
+  justify-items: center;
 }
 
-.bar-track {
+.bar-wrapper {
   width: 100%;
-  height: 9px;
-  border-radius: 999px;
-  background: rgba(148, 163, 184, 0.16);
-  overflow: hidden;
+  max-width: 70px;
+  height: 120px;
+  border-radius: 12px;
+  background: rgba(148, 163, 184, 0.14);
+  display: flex;
+  align-items: flex-end;
+  padding: 0.25rem;
 }
 
 .bar-fill {
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
-  box-shadow: 0 0 16px rgba(96, 165, 250, 0.25);
+  width: 100%;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+  box-shadow: 0 0 18px rgba(96, 165, 250, 0.24);
+}
+
+.bar-meta {
+  display: grid;
+  gap: 0.2rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.bar-meta span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.bar-meta strong {
+  color: var(--accent);
+  font-size: 0.95rem;
 }
 
 .feature-item {
