@@ -241,46 +241,127 @@ function buildEntryMarkup(entry) {
 
 async function renderCompanyChart() {
   const chart = document.getElementById('companyChart');
+  const summary = document.getElementById('monthlySummary');
+  const legend = document.getElementById('chartLegend');
   if (!chart) return;
 
   const { items = [] } = await loadReportsFromApi();
   const localEntries = getEntries();
   const sourceEntries = items.length ? items : localEntries;
 
-  const counts = sourceEntries.reduce((accumulator, entry) => {
+  const monthlyData = sourceEntries.reduce((accumulator, entry) => {
     const company = (entry.companyName || entry.companyNameAttended || '').trim();
-    if (!company) {
+    const rawDate = entry.date || entry.createdAt || '';
+    if (!company || !rawDate) {
       return accumulator;
     }
 
-    accumulator[company] = (accumulator[company] || 0) + 1;
+    const parsedDate = new Date(rawDate);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return accumulator;
+    }
+
+    const monthKey = `${parsedDate.getFullYear()}-${String(parsedDate.getMonth() + 1).padStart(2, '0')}`;
+    if (!accumulator[company]) {
+      accumulator[company] = {};
+    }
+
+    accumulator[company][monthKey] = (accumulator[company][monthKey] || 0) + 1;
     return accumulator;
   }, {});
 
-  const sortedEntries = Object.entries(counts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
+  const companies = Object.entries(monthlyData)
+    .sort((a, b) => Object.values(b[1]).reduce((sum, value) => sum + value, 0) - Object.values(a[1]).reduce((sum, value) => sum + value, 0))
+    .slice(0, 4);
 
-  if (!sortedEntries.length) {
-    chart.innerHTML = '<div class="empty">No company activity yet.</div>';
+  if (!companies.length) {
+    chart.innerHTML = '<div class="empty">No monthly activity yet.</div>';
+    if (summary) {
+      summary.innerHTML = '';
+    }
+    if (legend) {
+      legend.innerHTML = '';
+    }
     return;
   }
 
-  const maxValue = Math.max(...sortedEntries.map(([, count]) => count));
+  const monthKeys = [...new Set(sourceEntries
+    .map((entry) => {
+      const rawDate = entry.date || entry.createdAt || '';
+      const parsedDate = new Date(rawDate);
+      if (Number.isNaN(parsedDate.getTime())) {
+        return null;
+      }
+      return `${parsedDate.getFullYear()}-${String(parsedDate.getMonth() + 1).padStart(2, '0')}`;
+    })
+    .filter(Boolean))]
+    .sort();
+
+  const maxValue = Math.max(
+    1,
+    ...companies.flatMap(([, months]) => Object.values(months))
+  );
+
+  const totalVisits = companies.reduce((sum, [, months]) => sum + Object.values(months).reduce((valueSum, value) => valueSum + value, 0), 0);
+  const latestMonth = monthKeys[monthKeys.length - 1];
+  const previousMonth = monthKeys[monthKeys.length - 2];
+  const trendText = latestMonth && previousMonth
+    ? companies.map(([company, months]) => {
+        const latestValue = months[latestMonth] || 0;
+        const previousValue = months[previousMonth] || 0;
+        const delta = latestValue - previousValue;
+        const direction = delta > 0 ? 'up' : delta < 0 ? 'down' : 'steady';
+        return `${company}: ${direction === 'up' ? '↑' : direction === 'down' ? '↓' : '•'} ${Math.abs(delta)}`;
+      }).join(' • ')
+    : 'Monthly trend will appear as activity grows.';
+
+  if (summary) {
+    summary.innerHTML = `
+      <div class="summary-pill">
+        <strong>${totalVisits}</strong>
+        <span>total visits</span>
+      </div>
+      <div class="summary-pill">
+        <strong>${companies.length}</strong>
+        <span>companies tracked</span>
+      </div>
+      <div class="summary-pill">
+        <strong>${monthKeys.length}</strong>
+        <span>months shown</span>
+      </div>
+      <div class="summary-pill trend-pill">
+        <strong>${latestMonth || '—'}</strong>
+        <span>${trendText}</span>
+      </div>
+    `;
+  }
+
+  if (legend) {
+    legend.innerHTML = `
+      <div class="legend-item">
+        <span class="legend-swatch"></span>
+        <span>Monthly visit activity</span>
+      </div>
+    `;
+  }
 
   chart.innerHTML = `
-    <div class="bar-chart">
-      ${sortedEntries
-        .map(([company, count]) => {
-          const height = Math.max(18, (count / maxValue) * 100);
+    <div class="monthly-chart">
+      <div class="chart-axis"></div>
+      <div class="chart-grid">
+        ${monthKeys.map((month) => `<div class="chart-month-label">${month}</div>`).join('')}
+      </div>
+      ${companies
+        .map(([company, months]) => {
           return `
-            <div class="bar-item">
-              <div class="bar-wrapper">
-                <div class="bar-fill" style="height: ${height}%"></div>
-              </div>
-              <div class="bar-meta">
-                <span>${company}</span>
-                <strong>${count}</strong>
+            <div class="series-row">
+              <div class="series-label">${company}</div>
+              <div class="series-bars">
+                ${monthKeys.map((month) => {
+                  const value = months[month] || 0;
+                  const height = value === 0 ? 0 : Math.max(12, (value / maxValue) * 100);
+                  return `<div class="series-bar" title="${company} in ${month}: ${value} visit${value === 1 ? '' : 's'}"><div class="series-fill" style="--bar-height: ${height}%; animation-delay: ${Math.random() * 0.3}s"></div><span class="series-value">${value}</span></div>`;
+                }).join('')}
               </div>
             </div>
           `;
