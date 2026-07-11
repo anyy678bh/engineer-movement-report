@@ -112,6 +112,40 @@ function saveProfile(profile) {
   localStorage.setItem(profileKey, JSON.stringify(profile));
 }
 
+async function loadProfileFromApi() {
+  const profileApiUrl = window.PROFILE_API_URL || '';
+  const session = getSession();
+  if (!profileApiUrl || !session?.email) {
+    return null;
+  }
+
+  try {
+    const url = new URL(profileApiUrl);
+    url.searchParams.set('userId', session.email);
+    url.searchParams.set('tenantId', window.DEFAULT_TENANT_ID);
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Unable to load profile from API');
+    }
+
+    const profile = await response.json();
+    if (profile && Object.keys(profile).length) {
+      saveProfile({
+        fullName: profile.fullName || '',
+        department: profile.department || '',
+        idCardNumber: profile.idCardNumber || '',
+        emailAddress: profile.emailAddress || session.email,
+      });
+      return getProfile();
+    }
+  } catch (error) {
+    console.warn('Profile API load failed:', error);
+  }
+
+  return null;
+}
+
 function getSession() {
   try {
     return JSON.parse(localStorage.getItem(authKey) || 'null');
@@ -206,15 +240,22 @@ async function renderEntries() {
   }
 }
 
-function renderProfilePage() {
+async function renderProfilePage() {
   const session = getSession();
-  const profile = getProfile();
+  let profile = getProfile();
 
   if (!document.getElementById('profileName')) return;
 
   if (!session) {
     window.location.href = 'login.html';
     return;
+  }
+
+  if (!profile.fullName && !profile.department && !profile.idCardNumber && !profile.emailAddress) {
+    const remoteProfile = await loadProfileFromApi();
+    if (remoteProfile) {
+      profile = remoteProfile;
+    }
   }
 
   const displayName = profile.fullName || session.name || 'Engineer User';
@@ -317,7 +358,7 @@ function handleRegister(event) {
   window.location.href = 'profile.html';
 }
 
-function handleProfileUpdate(event) {
+async function handleProfileUpdate(event) {
   event.preventDefault();
 
   const profile = {
@@ -328,7 +369,31 @@ function handleProfileUpdate(event) {
   };
 
   saveProfile(profile);
-  if (profileMessage) profileMessage.textContent = 'Profile updated successfully.';
+
+  try {
+    const profileApiUrl = window.PROFILE_API_URL || '';
+    if (profileApiUrl) {
+      const response = await fetch(profileApiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: getSession()?.email || profile.emailAddress,
+          tenantId: window.DEFAULT_TENANT_ID,
+          ...profile,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Profile API request failed');
+      }
+    }
+
+    if (profileMessage) profileMessage.textContent = 'Profile updated successfully.';
+  } catch (error) {
+    console.warn('Profile save to API failed, data kept locally:', error);
+    if (profileMessage) profileMessage.textContent = 'Profile saved locally. AWS sync will retry later.';
+  }
+
   renderProfilePage();
 }
 

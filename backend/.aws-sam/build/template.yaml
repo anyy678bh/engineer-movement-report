@@ -1,100 +1,58 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Engineer Movement Report backend using Lambda, API Gateway, DynamoDB,
-  and Cognito
+Description: Add a Lambda and API endpoint for user profile storage
 Globals:
   Function:
     Runtime: nodejs20.x
     Timeout: 30
 Resources:
-  ReportsTable:
+  ProfileApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: '''OPTIONS,GET,POST'''
+        AllowHeaders: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'''
+        AllowOrigin: '''*'''
+  UserProfilesTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: engineer-movement-reports
+      TableName: engineer-user-profiles
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
-      - AttributeName: pk
+      - AttributeName: userId
         AttributeType: S
-      - AttributeName: sk
+      - AttributeName: tenantId
         AttributeType: S
       KeySchema:
-      - AttributeName: pk
+      - AttributeName: userId
         KeyType: HASH
-      - AttributeName: sk
+      - AttributeName: tenantId
         KeyType: RANGE
-  UserPool:
-    Type: AWS::Cognito::UserPool
-    Properties:
-      UserPoolName: engineer-movement-report-users
-      AutoVerifiedAttributes:
-      - email
-      UsernameAttributes:
-      - email
-      Policies:
-        PasswordPolicy:
-          MinimumLength: 8
-          RequireLowercase: true
-          RequireNumbers: true
-          RequireSymbols: false
-          RequireUppercase: true
-  UserPoolClient:
-    Type: AWS::Cognito::UserPoolClient
-    Properties:
-      ClientName: engineer-movement-report-client
-      UserPoolId:
-        Ref: UserPool
-      ExplicitAuthFlows:
-      - ALLOW_USER_PASSWORD_AUTH
-      - ALLOW_REFRESH_TOKEN_AUTH
-  CreateReportFunction:
+  ProfileFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: CreateReportFunction
+      CodeUri: ProfileFunction
       Handler: index.handler
       Environment:
         Variables:
-          REPORTS_TABLE:
-            Ref: ReportsTable
+          USER_PROFILES_TABLE:
+            Ref: UserProfilesTable
       Policies:
       - DynamoDBCrudPolicy:
           TableName:
-            Ref: ReportsTable
+            Ref: UserProfilesTable
       Events:
-        CreateReportApi:
+        ProfileApi:
           Type: Api
           Properties:
-            Path: /reports
-            Method: post
+            RestApiId:
+              Ref: ProfileApi
+            Path: /profile
+            Method: any
     Metadata:
-      SamResourceId: CreateReportFunction
-  ListReportsFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: ListReportsFunction
-      Handler: index.handler
-      Environment:
-        Variables:
-          REPORTS_TABLE:
-            Ref: ReportsTable
-      Policies:
-      - DynamoDBCrudPolicy:
-          TableName:
-            Ref: ReportsTable
-      Events:
-        ListReportsApi:
-          Type: Api
-          Properties:
-            Path: /reports
-            Method: get
-    Metadata:
-      SamResourceId: ListReportsFunction
+      SamResourceId: ProfileFunction
 Outputs:
-  UserPoolId:
+  ProfileApiEndpoint:
     Value:
-      Ref: UserPool
-  UserPoolClientId:
-    Value:
-      Ref: UserPoolClient
-  ApiEndpoint:
-    Value:
-      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod
+      Fn::Sub: https://${ProfileApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/profile
