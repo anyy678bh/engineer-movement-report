@@ -10,11 +10,16 @@
     <header class="hero">
       <div class="hero-row">
         <div>
-          <p class="eyebrow">Multi-tenant field service reporting</p>
+          <p class="eyebrow">Field service operations</p>
           <h1>Engineer Movement Report</h1>
           <p class="subtitle">
-            Capture each daily engineering movement in a simple, structured workflow.
+            Capture each daily engineering movement in a simple, structured workflow that is easy to review and share.
           </p>
+          <div class="hero-badges">
+            <span class="badge">Daily log</span>
+            <span class="badge">Recent history</span>
+            <span class="badge">Cloud-ready</span>
+          </div>
         </div>
         <div class="hero-actions">
           <a class="auth-link" href="login.html">Login</a>
@@ -26,7 +31,16 @@
 
     <main class="layout">
       <section class="card">
-        <h2>Daily Movement Form</h2>
+        <div class="card-header">
+          <div>
+            <p class="section-kicker">Create a report</p>
+            <h2>Daily movement form</h2>
+          </div>
+          <span class="pill">Fast capture</span>
+        </div>
+        <p class="card-copy">
+          Record the company visited, location, transport mode, machine serviced, and work completed in one neat entry.
+        </p>
         <form id="movementForm">
           <label>
             Date
@@ -62,16 +76,36 @@
             <textarea id="serviceRendered" rows="4" placeholder="Describe the work completed" required></textarea>
           </label>
 
-          <button type="submit">Save Report</button>
+          <button type="submit">Save report</button>
         </form>
+        <div id="formStatus" class="status-pill" role="status" aria-live="polite"></div>
       </section>
 
       <section class="card">
-        <div class="section-head">
-          <h2>Quick actions</h2>
+        <div class="card-header">
+          <div>
+            <p class="section-kicker">Quick access</p>
+            <h2>Stay on top of activity</h2>
+          </div>
         </div>
-        <p class="muted">Open the dedicated recent entries page to review the latest seven reports and search by date or company.</p>
-        <a class="auth-link" href="recent-entries.html" style="display: inline-block; margin-top: 0.75rem;">View recent entries</a>
+        <div class="metric-grid">
+          <div class="metric">
+            <strong>7</strong>
+            <span>latest entries</span>
+          </div>
+          <div class="metric">
+            <strong>Fast</strong>
+            <span>search by date</span>
+          </div>
+          <div class="metric">
+            <strong>Easy</strong>
+            <span>company filtering</span>
+          </div>
+        </div>
+        <p class="card-copy">
+          Open the recent entries view to review the latest records and filter them by date or company visited.
+        </p>
+        <a class="auth-link secondary" href="recent-entries.html">View recent entries</a>
       </section>
     </main>
 

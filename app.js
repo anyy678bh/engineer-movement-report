@@ -1,6 +1,7 @@
 const form = document.getElementById('movementForm');
 const entriesList = document.getElementById('entriesList');
 const clearBtn = document.getElementById('clearBtn');
+const formStatus = document.getElementById('formStatus');
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const profileForm = document.getElementById('profileForm');
@@ -203,6 +204,19 @@ function getUsers() {
 
 function saveUsers(users) {
   localStorage.setItem(usersKey, JSON.stringify(users));
+}
+
+function setFormStatus(message, type = 'success') {
+  if (!formStatus) return;
+
+  if (!message) {
+    formStatus.textContent = '';
+    formStatus.className = 'status-pill';
+    return;
+  }
+
+  formStatus.textContent = message;
+  formStatus.className = `status-pill ${type}`;
 }
 
 function buildEntryMarkup(entry) {
@@ -455,7 +469,10 @@ if (form) {
     event.preventDefault();
 
     if (!getSession()) {
-      entriesList.innerHTML = '<div class="empty">Please sign in before saving a report.</div>';
+      if (entriesList) {
+        entriesList.innerHTML = '<div class="empty">Please sign in before saving a report.</div>';
+      }
+      setFormStatus('Please sign in before saving a report.', 'error');
       return;
     }
 
@@ -471,9 +488,15 @@ if (form) {
 
     const entries = [entry, ...getEntries()];
     saveEntries(entries);
-    await syncReportToApi(entry);
+    const synced = await syncReportToApi(entry);
     renderEntries();
     form.reset();
+
+    if (synced) {
+      setFormStatus('Report saved successfully and synced.', 'success');
+    } else {
+      setFormStatus('Report saved locally. Sync will retry when the connection is available.', 'error');
+    }
   });
 }
 

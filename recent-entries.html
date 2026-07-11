@@ -10,7 +10,7 @@
     <header class="hero">
       <div class="hero-row">
         <div>
-          <p class="eyebrow">Multi-tenant field service reporting</p>
+          <p class="eyebrow">Field service operations</p>
           <h1>Recent Entries</h1>
           <p class="subtitle">Review the latest seven entries and query them by date or company visited.</p>
         </div>
@@ -21,12 +21,16 @@
       </div>
     </header>
 
-    <main class="layout">
+    <main class="layout single-column">
       <section class="card">
-        <div class="entries-toolbar">
-          <h2>Search recent entries</h2>
-          <span id="recentEntriesCount" class="muted">Loading…</span>
+        <div class="card-header">
+          <div>
+            <p class="section-kicker">Browse history</p>
+            <h2>Search recent entries</h2>
+          </div>
+          <span id="recentEntriesCount" class="pill subtle">Loading…</span>
         </div>
+        <p class="card-copy">Refine the latest reports quickly using the filters below so you can focus on the work that matters.</p>
 
         <form id="recentEntriesSearchForm" class="query-form">
           <div class="query-row">
