@@ -73,6 +73,32 @@ async function syncReportToApi(entry) {
   }
 }
 
+async function loadReportsFromApi(startToken = null) {
+  const apiBaseUrl = window.API_BASE_URL || '';
+  if (!apiBaseUrl) {
+    return { items: [], nextToken: null };
+  }
+
+  try {
+    const url = new URL(`${apiBaseUrl}/reports`);
+    url.searchParams.set('tenantId', window.DEFAULT_TENANT_ID);
+    url.searchParams.set('limit', '7');
+    if (startToken) {
+      url.searchParams.set('startKey', startToken);
+    }
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Unable to load reports from API');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.warn('API load failed:', error);
+    return { items: [], nextToken: null };
+  }
+}
+
 function getProfile() {
   try {
     return JSON.parse(localStorage.getItem(profileKey) || '{}');
@@ -117,7 +143,7 @@ function saveUsers(users) {
   localStorage.setItem(usersKey, JSON.stringify(users));
 }
 
-function renderEntries() {
+async function renderEntries() {
   if (!entriesList) return;
 
   const session = getSession();
@@ -126,27 +152,58 @@ function renderEntries() {
     return;
   }
 
-  const entries = getEntries();
+  const { items, nextToken } = await loadReportsFromApi();
+  const localEntries = getEntries();
+  const entries = items.length ? items : localEntries;
 
   if (!entries.length) {
     entriesList.innerHTML = '<div class="empty">No movement reports saved yet.</div>';
     return;
   }
 
-  entriesList.innerHTML = entries
+  const entriesHtml = entries
     .map(
       (entry) => `
         <article class="entry">
-          <h3>${entry.companyName}</h3>
-          <p><strong>Date:</strong> ${entry.date}</p>
-          <p><strong>Location:</strong> ${entry.location}</p>
-          <p><strong>Transport:</strong> ${entry.transportType}</p>
-          <p><strong>Machine:</strong> ${entry.machineType}</p>
-          <p><strong>Service:</strong> ${entry.serviceRendered}</p>
+          <h3>${entry.companyName || entry.companyNameAttended || 'Unknown company'}</h3>
+          <p><strong>Date:</strong> ${entry.date || entry.createdAt || 'N/A'}</p>
+          <p><strong>Location:</strong> ${entry.location || 'N/A'}</p>
+          <p><strong>Transport:</strong> ${entry.transportType || 'N/A'}</p>
+          <p><strong>Machine:</strong> ${entry.machineType || 'N/A'}</p>
+          <p><strong>Service:</strong> ${entry.serviceRendered || 'N/A'}</p>
         </article>
       `
     )
     .join('');
+
+  const nextButton = nextToken
+    ? `<button id="loadMoreBtn" class="ghost" type="button">Load more reports</button>`
+    : '';
+
+  entriesList.innerHTML = `${entriesHtml}${nextButton}`;
+
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', async () => {
+      const moreData = await loadReportsFromApi(nextToken);
+      const combinedEntries = [...entries, ...moreData.items];
+      const mergedHtml = combinedEntries
+        .map(
+          (entry) => `
+            <article class="entry">
+              <h3>${entry.companyName || entry.companyNameAttended || 'Unknown company'}</h3>
+              <p><strong>Date:</strong> ${entry.date || entry.createdAt || 'N/A'}</p>
+              <p><strong>Location:</strong> ${entry.location || 'N/A'}</p>
+              <p><strong>Transport:</strong> ${entry.transportType || 'N/A'}</p>
+              <p><strong>Machine:</strong> ${entry.machineType || 'N/A'}</p>
+              <p><strong>Service:</strong> ${entry.serviceRendered || 'N/A'}</p>
+            </article>
+          `
+        )
+        .join('');
+      entriesList.innerHTML = `${mergedHtml}${moreData.nextToken ? '<button id="loadMoreBtn" class="ghost" type="button">Load more reports</button>' : ''}`;
+    });
+  }
 }
 
 function renderProfilePage() {
