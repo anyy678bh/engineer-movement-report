@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recent Entries | Engineer Movement Report</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-row">
+        <div>
+          <p class="eyebrow">Multi-tenant field service reporting</p>
+          <h1>Recent Entries</h1>
+          <p class="subtitle">Review the latest seven entries and query them by date or company visited.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="auth-link" href="index.html">Reports</a>
+          <a class="auth-link" href="profile.html">Profile</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="card">
+        <div class="entries-toolbar">
+          <h2>Search recent entries</h2>
+          <span id="recentEntriesCount" class="muted">Loading…</span>
+        </div>
+
+        <form id="recentEntriesSearchForm" class="query-form">
+          <div class="query-row">
+            <label>
+              Date
+              <input type="date" id="queryDate" />
+            </label>
+            <label>
+              Company visited
+              <input type="text" id="queryCompany" placeholder="e.g. Acme" />
+            </label>
+          </div>
+          <div class="query-actions">
+            <button type="submit">Search</button>
+            <button type="button" class="ghost" onclick="document.getElementById('recentEntriesSearchForm').reset(); renderRecentEntriesPage();">Clear</button>
+          </div>
+        </form>
+
+        <div id="recentEntriesList" class="entries"></div>
+      </section>
+    </main>
+
+    <script src="config.js?v=20260711"></script>
+    <script src="app.js?v=20260711"></script>
+  </body>
+</html>

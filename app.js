@@ -205,6 +205,26 @@ function saveUsers(users) {
   localStorage.setItem(usersKey, JSON.stringify(users));
 }
 
+function buildEntryMarkup(entry) {
+  const company = entry.companyName || entry.companyNameAttended || 'Unknown company';
+  const date = entry.date || entry.createdAt || 'N/A';
+  const location = entry.location || 'N/A';
+  const transportType = entry.transportType || 'N/A';
+  const machineType = entry.machineType || 'N/A';
+  const serviceRendered = entry.serviceRendered || 'N/A';
+
+  return `
+    <article class="entry">
+      <h3>${company}</h3>
+      <p><strong>Date:</strong> ${date}</p>
+      <p><strong>Location:</strong> ${location}</p>
+      <p><strong>Transport:</strong> ${transportType}</p>
+      <p><strong>Machine:</strong> ${machineType}</p>
+      <p><strong>Service:</strong> ${serviceRendered}</p>
+    </article>
+  `;
+}
+
 async function renderEntries() {
   if (!entriesList) return;
 
@@ -214,58 +234,64 @@ async function renderEntries() {
     return;
   }
 
-  const { items, nextToken } = await loadReportsFromApi();
+  const { items = [] } = await loadReportsFromApi();
   const localEntries = getEntries();
-  const entries = items.length ? items : localEntries;
+  const entries = (items.length ? items : localEntries).slice(0, 7);
 
   if (!entries.length) {
     entriesList.innerHTML = '<div class="empty">No movement reports saved yet.</div>';
     return;
   }
 
-  const entriesHtml = entries
-    .map(
-      (entry) => `
-        <article class="entry">
-          <h3>${entry.companyName || entry.companyNameAttended || 'Unknown company'}</h3>
-          <p><strong>Date:</strong> ${entry.date || entry.createdAt || 'N/A'}</p>
-          <p><strong>Location:</strong> ${entry.location || 'N/A'}</p>
-          <p><strong>Transport:</strong> ${entry.transportType || 'N/A'}</p>
-          <p><strong>Machine:</strong> ${entry.machineType || 'N/A'}</p>
-          <p><strong>Service:</strong> ${entry.serviceRendered || 'N/A'}</p>
-        </article>
-      `
-    )
-    .join('');
+  entriesList.innerHTML = entries.map(buildEntryMarkup).join('');
+}
 
-  const nextButton = nextToken
-    ? `<button id="loadMoreBtn" class="ghost" type="button">Load more reports</button>`
-    : '';
+async function renderRecentEntriesPage() {
+  const list = document.getElementById('recentEntriesList');
+  const form = document.getElementById('recentEntriesSearchForm');
+  const count = document.getElementById('recentEntriesCount');
+  if (!list) return;
 
-  entriesList.innerHTML = `${entriesHtml}${nextButton}`;
+  const session = getSession();
+  if (!session) {
+    list.innerHTML = '<div class="empty">Please sign in to view recent entries.</div>';
+    return;
+  }
 
-  const loadMoreBtn = document.getElementById('loadMoreBtn');
-  if (loadMoreBtn) {
-    loadMoreBtn.addEventListener('click', async () => {
-      const moreData = await loadReportsFromApi(nextToken);
-      const combinedEntries = [...entries, ...moreData.items];
-      const mergedHtml = combinedEntries
-        .map(
-          (entry) => `
-            <article class="entry">
-              <h3>${entry.companyName || entry.companyNameAttended || 'Unknown company'}</h3>
-              <p><strong>Date:</strong> ${entry.date || entry.createdAt || 'N/A'}</p>
-              <p><strong>Location:</strong> ${entry.location || 'N/A'}</p>
-              <p><strong>Transport:</strong> ${entry.transportType || 'N/A'}</p>
-              <p><strong>Machine:</strong> ${entry.machineType || 'N/A'}</p>
-              <p><strong>Service:</strong> ${entry.serviceRendered || 'N/A'}</p>
-            </article>
-          `
-        )
-        .join('');
-      entriesList.innerHTML = `${mergedHtml}${moreData.nextToken ? '<button id="loadMoreBtn" class="ghost" type="button">Load more reports</button>' : ''}`;
+  const { items = [] } = await loadReportsFromApi();
+  const recentEntries = (items.length ? items : getEntries()).slice(0, 7);
+  const renderResults = (entries) => {
+    if (count) {
+      count.textContent = `Showing ${entries.length} of ${recentEntries.length} latest entries`;
+    }
+
+    if (!entries.length) {
+      list.innerHTML = '<div class="empty">No entries matched your search.</div>';
+      return;
+    }
+
+    list.innerHTML = entries.map(buildEntryMarkup).join('');
+  };
+
+  if (form) {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const date = document.getElementById('queryDate').value;
+      const company = document.getElementById('queryCompany').value.trim().toLowerCase();
+
+      const filteredEntries = recentEntries.filter((entry) => {
+        const entryDate = (entry.date || entry.createdAt || '').toString();
+        const entryCompany = (entry.companyName || entry.companyNameAttended || '').toString().toLowerCase();
+        const matchesDate = !date || entryDate.startsWith(date);
+        const matchesCompany = !company || entryCompany.includes(company);
+        return matchesDate && matchesCompany;
+      });
+
+      renderResults(filteredEntries);
     });
   }
+
+  renderResults(recentEntries);
 }
 
 async function renderProfilePage() {
@@ -479,4 +505,5 @@ if (logoutBtn) {
 }
 
 renderEntries();
+renderRecentEntriesPage();
 renderProfilePage();
