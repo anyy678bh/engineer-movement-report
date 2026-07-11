@@ -21,7 +21,8 @@ Use a single DynamoDB table with records shaped like this:
 - createdAt
 
 ## Deployment skeleton included
-- amplify.yml for Amplify hosting
+- amplify.yaml for Amplify hosting
+- amplify.yml for Amplify hosting compatibility
 - backend/template.yaml for Lambda, API Gateway, Cognito, and DynamoDB
 - backend/lambda/createReport/index.mjs for saving a report
 - backend/lambda/listReports/index.mjs for listing reports
