@@ -112,6 +112,34 @@ function saveProfile(profile) {
   localStorage.setItem(profileKey, JSON.stringify(profile));
 }
 
+async function syncProfileToApi(profile, userId = null) {
+  const profileApiUrl = window.PROFILE_API_URL || '';
+  if (!profileApiUrl) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(profileApiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: userId || profile.emailAddress || 'unknown@example.com',
+        tenantId: window.DEFAULT_TENANT_ID,
+        ...profile,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Profile API request failed');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.warn('Profile API sync failed:', error);
+    return null;
+  }
+}
+
 async function loadProfileFromApi() {
   const profileApiUrl = window.PROFILE_API_URL || '';
   const session = getSession();
@@ -313,7 +341,7 @@ function handleLogin(event) {
   }
 }
 
-function handleRegister(event) {
+async function handleRegister(event) {
   event.preventDefault();
 
   const fullName = document.getElementById('registerFullName').value.trim();
@@ -354,7 +382,13 @@ function handleRegister(event) {
   saveSession({ name: fullName, email: emailAddress });
   saveProfile({ fullName, department, idCardNumber, emailAddress });
 
-  if (registerMessage) registerMessage.textContent = 'Account created successfully. Redirecting...';
+  const syncedProfile = await syncProfileToApi({ fullName, department, idCardNumber, emailAddress }, emailAddress);
+  if (registerMessage) {
+    registerMessage.textContent = syncedProfile
+      ? 'Account created successfully and synced to AWS. Redirecting...'
+      : 'Account created locally. AWS sync failed. Redirecting...';
+  }
+
   window.location.href = 'profile.html';
 }
 
@@ -370,27 +404,11 @@ async function handleProfileUpdate(event) {
 
   saveProfile(profile);
 
-  try {
-    const profileApiUrl = window.PROFILE_API_URL || '';
-    if (profileApiUrl) {
-      const response = await fetch(profileApiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: getSession()?.email || profile.emailAddress,
-          tenantId: window.DEFAULT_TENANT_ID,
-          ...profile,
-        }),
-      });
+  const syncedProfile = await syncProfileToApi(profile, getSession()?.email || profile.emailAddress);
 
-      if (!response.ok) {
-        throw new Error('Profile API request failed');
-      }
-    }
-
+  if (syncedProfile) {
     if (profileMessage) profileMessage.textContent = 'Profile updated successfully.';
-  } catch (error) {
-    console.warn('Profile save to API failed, data kept locally:', error);
+  } else {
     if (profileMessage) profileMessage.textContent = 'Profile saved locally. AWS sync will retry later.';
   }
 
