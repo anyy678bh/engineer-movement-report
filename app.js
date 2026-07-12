@@ -9,7 +9,6 @@ const transportTypeSelect = document.getElementById('transportType');
 const vehiclePlateInput = document.getElementById('vehiclePlateNumber');
 const vehiclePlateContainer = document.getElementById('vehiclePlateContainer');
 const profileImageFileInput = document.getElementById('profileImageFile');
-const profileImageUrlInput = document.getElementById('profileImageUrl');
 const removeProfileImageBtn = document.getElementById('removeProfileImageBtn');
 const profileImagePreview = document.getElementById('profileImagePreview');
 const profileImagePreviewPlaceholder = document.getElementById('profileImagePreviewPlaceholder');
@@ -191,9 +190,8 @@ function renderProfileAvatar(profile) {
 }
 
 function handleProfileImageFileChange() {
-  if (!profileImageFileInput || !profileImageUrlInput) return;
+  if (!profileImageFileInput) return;
   profileImageClearRequested = false;
-  profileImageUrlInput.value = '';
   const file = profileImageFileInput.files?.[0];
   if (!file) {
     const profile = getProfile();
@@ -210,22 +208,8 @@ function handleProfileImageFileChange() {
     });
 }
 
-function handleProfileImageUrlChange() {
-  if (!profileImageUrlInput || !profileImageFileInput) return;
-  profileImageClearRequested = false;
-  profileImageFileInput.value = '';
-  const url = profileImageUrlInput.value.trim();
-  if (url) {
-    setProfileImagePreview(url);
-  } else {
-    const profile = getProfile();
-    setProfileImagePreview(getProfileImagePreviewSource(profile));
-  }
-}
-
 function clearProfileImageSelection() {
   if (profileImageFileInput) profileImageFileInput.value = '';
-  if (profileImageUrlInput) profileImageUrlInput.value = '';
   profileImageClearRequested = true;
   setProfileImagePreview(null);
 }
@@ -928,9 +912,6 @@ function initializeEditProfileForm() {
     if (emailField) emailField.value = profile.emailAddress || getSession()?.email || '';
   }
 
-  if (profileImageUrlInput) {
-    profileImageUrlInput.value = profile.profileImageUrl || '';
-  }
   setProfileImagePreview(getProfileImagePreviewSource(profile));
   renderProfileAvatar(profile);
 }
@@ -971,14 +952,6 @@ async function handleProfileUpdate(event) {
         profile.profileImageKey = signedData.imageKey;
       }
     }
-  } else if (profileImageUrlInput?.value.trim()) {
-    const url = profileImageUrlInput.value.trim();
-    if (currentProfile.profileImageKey && currentProfile.profileImageUrl !== url) {
-      await removeProfileImageFromServer(userId, currentProfile.profileImageKey);
-      profile.profileImageKey = '';
-    }
-    profile.profileImageUrl = url;
-    profile.profileImageData = '';
   } else {
     profile.profileImageData = currentProfile.profileImageData || '';
     profile.profileImageUrl = currentProfile.profileImageUrl || '';
@@ -1158,10 +1131,6 @@ if (profileForm) {
 
 if (profileImageFileInput) {
   profileImageFileInput.addEventListener('change', handleProfileImageFileChange);
-}
-
-if (profileImageUrlInput) {
-  profileImageUrlInput.addEventListener('input', handleProfileImageUrlChange);
 }
 
 if (removeProfileImageBtn) {

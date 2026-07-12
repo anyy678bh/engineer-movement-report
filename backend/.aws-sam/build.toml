@@ -18,4 +18,13 @@ manifest_hash = ""
 packagetype = "Zip"
 functions = ["ListReportsFunction"]
 
+[function_build_definitions.de1aad3b-251a-4c2b-842b-7412294f38a4]
+codeuri = "C:\\Users\\Admin\\Downloads\\engineer-movement-report\\backend\\profile-lambda"
+runtime = "nodejs20.x"
+architecture = "x86_64"
+handler = "index.handler"
+manifest_hash = ""
+packagetype = "Zip"
+functions = ["ProfileFunction"]
+
 [layer_build_definitions]

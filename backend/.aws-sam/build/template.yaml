@@ -77,6 +77,74 @@ Resources:
             Method: post
     Metadata:
       SamResourceId: CreateReportFunction
+  UserProfilesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: engineer-user-profiles
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: userId
+        AttributeType: S
+      - AttributeName: tenantId
+        AttributeType: S
+      KeySchema:
+      - AttributeName: userId
+        KeyType: HASH
+      - AttributeName: tenantId
+        KeyType: RANGE
+  UserProfileImagesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+  ProfileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ProfileFunction
+      Handler: index.handler
+      Environment:
+        Variables:
+          USER_PROFILES_TABLE:
+            Ref: UserProfilesTable
+          PROFILE_IMAGES_BUCKET:
+            Ref: UserProfileImagesBucket
+          AWS_REGION:
+            Ref: AWS::Region
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UserProfilesTable
+      - S3CrudPolicy:
+          BucketName:
+            Ref: UserProfileImagesBucket
+      Events:
+        ProfileApi:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: ReportsApi
+            Path: /profile
+            Method: any
+        ProfileImageUploadApi:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: ReportsApi
+            Path: /profile/image-upload
+            Method: any
+        ProfileImageRemoveApi:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: ReportsApi
+            Path: /profile/image-remove
+            Method: any
+    Metadata:
+      SamResourceId: ProfileFunction
   ListReportsFunction:
     Type: AWS::Serverless::Function
     Properties:
