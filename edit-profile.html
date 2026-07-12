@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Profile | Engineer Movement Report</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-row">
+        <div>
+          <p class="eyebrow">Field service operations</p>
+          <h1>Edit profile</h1>
+          <p class="subtitle">Update your profile details. Changes will be saved to your account.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="auth-link" href="index.html">Reports</a>
+          <a class="auth-link" href="profile.html">Profile</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="profile-shell">
+      <section class="profile-card">
+        <div class="profile-header">
+          <div class="avatar">AU</div>
+          <div>
+            <h2 id="profileName">User Name</h2>
+            <p id="profileEmail" class="muted">user@company.com</p>
+          </div>
+        </div>
+
+        <form id="profileForm" class="profile-form">
+          <label>
+            Full name
+            <input type="text" id="fullName" required />
+          </label>
+
+          <label>
+            Department
+            <input type="text" id="department" required />
+          </label>
+
+          <label>
+            ID card number (optional)
+            <input type="text" id="idCardNumber" placeholder="Optional" />
+          </label>
+
+          <label>
+            Email address
+            <input type="email" id="emailAddress" required />
+          </label>
+
+          <div class="profile-actions">
+            <button type="submit" id="saveProfileBtn">Save Profile</button>
+            <button type="button" id="resetPasswordBtn" class="ghost">Reset Password</button>
+            <button type="button" id="logoutBtn">Logout</button>
+          </div>
+        </form>
+
+        <p id="profileMessage" class="status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <script src="config.js?v=20260711"></script>
+    <script src="app.js?v=20260711"></script>
+  </body>
+</html>

@@ -5,6 +5,9 @@ const formStatus = document.getElementById('formStatus');
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const profileForm = document.getElementById('profileForm');
+const transportTypeSelect = document.getElementById('transportType');
+const vehiclePlateInput = document.getElementById('vehiclePlateNumber');
+const vehiclePlateContainer = document.getElementById('vehiclePlateContainer');
 const resetPasswordBtn = document.getElementById('resetPasswordBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const loginMessage = document.getElementById('loginMessage');
@@ -111,6 +114,52 @@ function getProfile() {
 
 function saveProfile(profile) {
   localStorage.setItem(profileKey, JSON.stringify(profile));
+}
+
+function updateVehiclePlateRequirement() {
+  if (!transportTypeSelect || !vehiclePlateInput || !vehiclePlateContainer) return;
+  const isCompanyVehicle = transportTypeSelect.value === 'Company Vehicle';
+  vehiclePlateContainer.classList.toggle('hidden', !isCompanyVehicle);
+  vehiclePlateInput.required = isCompanyVehicle;
+  if (!isCompanyVehicle) {
+    vehiclePlateInput.value = '';
+  }
+}
+
+function getVehiclePlateNumber() {
+  if (!transportTypeSelect || !vehiclePlateInput) return '';
+  return transportTypeSelect.value === 'Company Vehicle' ? vehiclePlateInput.value.trim() : '';
+}
+
+function getGreetingText() {
+  const hour = new Date().getHours();
+  if (hour < 5) return 'Good night';
+  if (hour < 12) return 'Good morning';
+  if (hour < 17) return 'Good afternoon';
+  if (hour < 21) return 'Good evening';
+  return 'Good night';
+}
+
+function getGreetingName() {
+  const profile = getProfile();
+  const session = getSession();
+  const rawName = profile.fullName || session?.name || 'Engineer';
+  return rawName.split(' ')[0];
+}
+
+function renderHomeGreeting() {
+  const greeting = document.getElementById('homeGreeting');
+  if (!greeting) return;
+
+  const label = greeting.querySelector('.greeting-label');
+  const name = greeting.querySelector('.greeting-name');
+  const subtitle = greeting.querySelector('.greeting-subtitle');
+  const greetingText = getGreetingText().toUpperCase();
+  const greetingName = getGreetingName().toUpperCase();
+
+  if (label) label.textContent = greetingText;
+  if (name) name.textContent = greetingName;
+  if (subtitle) subtitle.textContent = `Ready to log your last site visit?`;
 }
 
 async function syncProfileToApi(profile, userId = null) {
@@ -224,6 +273,7 @@ function buildEntryMarkup(entry) {
   const date = entry.date || entry.createdAt || 'N/A';
   const location = entry.location || 'N/A';
   const transportType = entry.transportType || 'N/A';
+  const plateNumber = entry.vehiclePlateNumber || '';
   const machineType = entry.machineType || 'N/A';
   const serviceRendered = entry.serviceRendered || 'N/A';
 
@@ -233,6 +283,7 @@ function buildEntryMarkup(entry) {
       <p><strong>Date:</strong> ${date}</p>
       <p><strong>Location:</strong> ${location}</p>
       <p><strong>Transport:</strong> ${transportType}</p>
+      ${plateNumber ? `<p><strong>Plate #:</strong> ${plateNumber}</p>` : ''}
       <p><strong>Machine:</strong> ${machineType}</p>
       <p><strong>Service:</strong> ${serviceRendered}</p>
     </article>
@@ -446,9 +497,9 @@ async function renderProfilePage() {
 
   if (!document.getElementById('profileName')) return;
 
-  if (!session) {
-    window.location.href = 'login.html';
-    return;
+  const isGuest = !session;
+  if (isGuest && profileMessage) {
+    profileMessage.textContent = 'Viewing profile (sign in to edit).';
   }
 
   if (!profile.fullName && !profile.department && !profile.idCardNumber && !profile.emailAddress) {
@@ -458,8 +509,8 @@ async function renderProfilePage() {
     }
   }
 
-  const displayName = profile.fullName || session.name || 'Engineer User';
-  const displayEmail = profile.emailAddress || session.email || 'user@company.com';
+  const displayName = profile.fullName || (session && session.name) || 'Engineer User';
+  const displayEmail = profile.emailAddress || (session && session.email) || 'user@company.com';
 
   const nameElement = document.getElementById('profileName');
   const emailElement = document.getElementById('profileEmail');
@@ -467,13 +518,31 @@ async function renderProfilePage() {
   const departmentField = document.getElementById('department');
   const idCardField = document.getElementById('idCardNumber');
   const emailField = document.getElementById('emailAddress');
+  const profileFullNameDisplay = document.getElementById('profileFullName');
+  const profileDepartmentDisplay = document.getElementById('profileDepartment');
+  const profileIdCardDisplay = document.getElementById('profileIdCard');
+  const profileEmailDisplay = document.getElementById('profileEmailDisplay');
 
   if (nameElement) nameElement.textContent = displayName;
   if (emailElement) emailElement.textContent = displayEmail;
+  if (profileFullNameDisplay) profileFullNameDisplay.textContent = profile.fullName || displayName;
+  if (profileDepartmentDisplay) profileDepartmentDisplay.textContent = profile.department || '—';
+  if (profileIdCardDisplay) profileIdCardDisplay.textContent = profile.idCardNumber || '—';
+  if (profileEmailDisplay) profileEmailDisplay.textContent = profile.emailAddress || displayEmail;
   if (fullNameField) fullNameField.value = profile.fullName || '';
   if (departmentField) departmentField.value = profile.department || '';
   if (idCardField) idCardField.value = profile.idCardNumber || '';
   if (emailField) emailField.value = displayEmail;
+  const debugEl = document.getElementById('profileDebug');
+  try {
+    if (debugEl) {
+      debugEl.textContent = JSON.stringify(profile, null, 2) || localStorage.getItem(profileKey) || '';
+    }
+    console.log('renderProfilePage - profile:', profile);
+    console.log('renderProfilePage - raw localStorage:', localStorage.getItem(profileKey));
+  } catch (e) {
+    if (debugEl) debugEl.textContent = `Error serializing profile: ${e.message}`;
+  }
 }
 
 function handleLogin(event) {
@@ -614,6 +683,7 @@ if (form) {
       companyName: document.getElementById('companyName').value.trim(),
       location: document.getElementById('location').value.trim(),
       transportType: document.getElementById('transportType').value,
+      vehiclePlateNumber: getVehiclePlateNumber(),
       machineType: document.getElementById('machineType').value.trim(),
       serviceRendered: document.getElementById('serviceRendered').value.trim(),
     };
@@ -660,7 +730,13 @@ if (logoutBtn) {
   logoutBtn.addEventListener('click', handleLogout);
 }
 
+if (transportTypeSelect) {
+  transportTypeSelect.addEventListener('change', updateVehiclePlateRequirement);
+}
+
+updateVehiclePlateRequirement();
 renderEntries();
 renderCompanyChart();
+renderHomeGreeting();
 renderRecentEntriesPage();
 renderProfilePage();

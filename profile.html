@@ -31,38 +31,48 @@
           </div>
         </div>
 
-        <form id="profileForm" class="profile-form">
-          <label>
-            Full name
-            <input type="text" id="fullName" required />
-          </label>
+                <div class="profile-details">
+          <p><strong>Full name</strong><br /><span id="profileFullName">—</span></p>
+          <p><strong>Department</strong><br /><span id="profileDepartment" class="muted">—</span></p>
+          <p><strong>ID card number</strong><br /><span id="profileIdCard" class="muted">—</span></p>
+          <p><strong>Email address</strong><br /><span id="profileEmailDisplay" class="muted">—</span></p>
+        </div>
 
-          <label>
-            Department
-            <input type="text" id="department" required />
-          </label>
-
-          <label>
-            ID card number (optional)
-            <input type="text" id="idCardNumber" placeholder="Optional" />
-          </label>
-
-          <label>
-            Email address
-            <input type="email" id="emailAddress" required />
-          </label>
-
-          <div class="profile-actions">
-            <button type="button" id="resetPasswordBtn" class="ghost">Reset Password</button>
-            <button type="button" id="logoutBtn">Logout</button>
-          </div>
-        </form>
+        <div class="profile-actions">
+          <a class="auth-link secondary" href="edit-profile.html">Edit profile</a>
+          <button type="button" id="resetPasswordBtn" class="ghost">Reset Password</button>
+          <button type="button" id="logoutBtn">Logout</button>
+        </div>
 
         <p id="profileMessage" class="status" aria-live="polite"></p>
       </section>
     </main>
 
-    <script src="config.js?v=20260711"></script>
-    <script src="app.js?v=20260711"></script>
+    <script>
+      (function () {
+        const profile = JSON.parse(localStorage.getItem('engineer-user-profile') || '{}');
+        const session = JSON.parse(localStorage.getItem('engineer-user-session') || 'null');
+        const displayName = profile.fullName || (session && session.name) || 'Engineer User';
+        const displayEmail = profile.emailAddress || (session && session.email) || 'user@company.com';
+        const setText = (id, value) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = value;
+        };
+
+        setText('profileName', displayName);
+        setText('profileEmail', displayEmail);
+        setText('profileFullName', profile.fullName || '—');
+        setText('profileDepartment', profile.department || '—');
+        setText('profileIdCard', profile.idCardNumber || '—');
+        setText('profileEmailDisplay', profile.emailAddress || displayEmail);
+
+        const debugEl = document.getElementById('profileDebug');
+        if (debugEl) {
+          debugEl.textContent = JSON.stringify(profile, null, 2) || 'No stored profile data.';
+        }
+      })();
+    </script>
+    <script src="config.js?v=20260713"></script>
+    <script src="app.js?v=20260713"></script>
   </body>
 </html>

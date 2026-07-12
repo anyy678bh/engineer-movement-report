@@ -12,13 +12,13 @@
         <div>
           <p class="eyebrow">Field service operations</p>
           <h1>Engineer Movement Report</h1>
-          <p class="subtitle">
-            Capture each daily engineering movement in a polished workflow designed for speed, clarity, and confident reporting.
-          </p>
           <div class="hero-badges">
             <span class="badge">Daily log</span>
-            <span class="badge">Recent history</span>
-            <span class="badge">Cloud-ready</span>
+          </div>
+          <div class="hero-greeting" id="homeGreeting">
+            <p class="greeting-label">GOOD DAY</p>
+            <h2 class="greeting-name">Engineer</h2>
+            <p class="greeting-subtitle">Your real-time activity summary updates with the day.</p>
           </div>
         </div>
         <div class="hero-actions">
@@ -66,9 +66,15 @@
             </select>
           </label>
 
+          <label id="vehiclePlateContainer" class="field-group hidden">
+            Vehicle plate number
+            <input type="text" id="vehiclePlateNumber" placeholder="Enter vehicle plate number" />
+            <span class="field-note">Required when using company vehicle.</span>
+          </label>
+
           <label>
             Type of Machine Repaired
-            <input type="text" id="machineType" placeholder="Pump, generator, switchboard" required />
+            <input type="text" id="machineType" placeholder="Forklift, stacker, EPT " required />
           </label>
 
           <label>
@@ -136,7 +142,7 @@
       </section>
     </main>
 
-    <script src="config.js?v=20260711"></script>
-    <script src="app.js?v=20260711"></script>
+    <script src="config.js?v=20260713"></script>
+    <script src="app.js?v=20260713"></script>
   </body>
 </html>

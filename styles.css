@@ -16,6 +16,17 @@
   box-sizing: border-box;
 }
 
+.hidden {
+  display: none !important;
+}
+
+.field-note {
+  display: block;
+  margin-top: 0.4rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 body {
   margin: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -166,6 +177,37 @@ body {
   gap: 0.6rem;
   flex-wrap: wrap;
   margin-top: 1rem;
+}
+
+.hero-greeting {
+  margin-top: 1.25rem;
+  padding: 1.2rem 1.25rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: min(680px, 100%);
+}
+
+.greeting-label {
+  margin: 0;
+  font-size: 0.83rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.greeting-name {
+  margin: 0.35rem 0 0;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  line-height: 1.05;
+}
+
+.greeting-subtitle {
+  margin: 0.75rem 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 85%;
+  line-height: 1.55;
 }
 
 .badge,
