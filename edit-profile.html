@@ -24,10 +24,35 @@
     <main class="profile-shell">
       <section class="profile-card">
         <div class="profile-header">
-          <div class="avatar">AU</div>
+          <div class="avatar" id="profileAvatar">
+            <img id="profileAvatarImg" alt="Profile photo" />
+            <span id="profileAvatarInitials">AU</span>
+          </div>
           <div>
             <h2 id="profileName">User Name</h2>
             <p id="profileEmail" class="muted">user@company.com</p>
+          </div>
+        </div>
+
+        <div class="profile-image-upload">
+          <div class="upload-row">
+            <label>
+              Upload profile photo
+              <input type="file" id="profileImageFile" accept="image/*" />
+            </label>
+            <label>
+              Use image URL
+              <input type="url" id="profileImageUrl" placeholder="https://example.com/avatar.jpg" />
+            </label>
+          </div>
+
+          <div class="profile-image-controls">
+            <button type="button" id="removeProfileImageBtn" class="ghost">Remove photo</button>
+          </div>
+
+          <div class="image-preview-card">
+            <img id="profileImagePreview" alt="Profile preview" />
+            <span id="profileImagePreviewPlaceholder">No photo selected</span>
           </div>
         </div>
 

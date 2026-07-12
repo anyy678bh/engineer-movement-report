@@ -8,6 +8,11 @@ const profileForm = document.getElementById('profileForm');
 const transportTypeSelect = document.getElementById('transportType');
 const vehiclePlateInput = document.getElementById('vehiclePlateNumber');
 const vehiclePlateContainer = document.getElementById('vehiclePlateContainer');
+const profileImageFileInput = document.getElementById('profileImageFile');
+const profileImageUrlInput = document.getElementById('profileImageUrl');
+const removeProfileImageBtn = document.getElementById('removeProfileImageBtn');
+const profileImagePreview = document.getElementById('profileImagePreview');
+const profileImagePreviewPlaceholder = document.getElementById('profileImagePreviewPlaceholder');
 const resetPasswordBtn = document.getElementById('resetPasswordBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const loginMessage = document.getElementById('loginMessage');
@@ -17,6 +22,7 @@ const storageKey = 'engineer-movement-reports';
 const authKey = 'engineer-user-session';
 const profileKey = 'engineer-user-profile';
 const usersKey = 'engineer-users';
+let profileImageClearRequested = false;
 
 function getReportsKey() {
   const session = getSession();
@@ -131,6 +137,99 @@ function getVehiclePlateNumber() {
   return transportTypeSelect.value === 'Company Vehicle' ? vehiclePlateInput.value.trim() : '';
 }
 
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function getProfileImagePreviewSource(profile) {
+  if (!profile) return null;
+  return profile.profileImageData || profile.profileImageUrl || null;
+}
+
+function setProfileImagePreview(source) {
+  if (!profileImagePreview || !profileImagePreviewPlaceholder) return;
+  if (source) {
+    profileImagePreview.src = source;
+    profileImagePreview.style.display = 'block';
+    profileImagePreviewPlaceholder.style.display = 'none';
+  } else {
+    profileImagePreview.src = '';
+    profileImagePreview.style.display = 'none';
+    profileImagePreviewPlaceholder.style.display = 'block';
+  }
+}
+
+function renderProfileAvatar(profile) {
+  const avatarImg = document.getElementById('profileAvatarImg');
+  const avatarInitials = document.getElementById('profileAvatarInitials');
+  if (!avatarImg || !avatarInitials) return;
+
+  const imageSource = getProfileImagePreviewSource(profile);
+  const displayName = profile?.fullName || getSession()?.name || 'Engineer';
+  const initials = displayName
+    .split(' ')
+    .map((part) => part[0] || '')
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
+  if (imageSource) {
+    avatarImg.src = imageSource;
+    avatarImg.style.display = 'block';
+    avatarInitials.style.display = 'none';
+  } else {
+    avatarImg.style.display = 'none';
+    avatarImg.src = '';
+    avatarInitials.textContent = initials;
+    avatarInitials.style.display = 'grid';
+  }
+}
+
+function handleProfileImageFileChange() {
+  if (!profileImageFileInput || !profileImageUrlInput) return;
+  profileImageClearRequested = false;
+  profileImageUrlInput.value = '';
+  const file = profileImageFileInput.files?.[0];
+  if (!file) {
+    const profile = getProfile();
+    setProfileImagePreview(getProfileImagePreviewSource(profile));
+    return;
+  }
+
+  readFileAsDataUrl(file)
+    .then((dataUrl) => {
+      setProfileImagePreview(dataUrl);
+    })
+    .catch(() => {
+      setProfileImagePreview(null);
+    });
+}
+
+function handleProfileImageUrlChange() {
+  if (!profileImageUrlInput || !profileImageFileInput) return;
+  profileImageClearRequested = false;
+  profileImageFileInput.value = '';
+  const url = profileImageUrlInput.value.trim();
+  if (url) {
+    setProfileImagePreview(url);
+  } else {
+    const profile = getProfile();
+    setProfileImagePreview(getProfileImagePreviewSource(profile));
+  }
+}
+
+function clearProfileImageSelection() {
+  if (profileImageFileInput) profileImageFileInput.value = '';
+  if (profileImageUrlInput) profileImageUrlInput.value = '';
+  profileImageClearRequested = true;
+  setProfileImagePreview(null);
+}
+
 function getGreetingText() {
   const hour = new Date().getHours();
   if (hour < 5) return 'Good night';
@@ -160,6 +259,68 @@ function renderHomeGreeting() {
   if (label) label.textContent = greetingText;
   if (name) name.textContent = greetingName;
   if (subtitle) subtitle.textContent = `Ready to log your last site visit?`;
+}
+
+async function getPresignedProfileImageUploadUrl(fileName, contentType, userId) {
+  const uploadUrlEndpoint = window.PROFILE_IMAGE_UPLOAD_URL || '';
+  if (!uploadUrlEndpoint) return null;
+
+  try {
+    const response = await fetch(uploadUrlEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenantId: window.DEFAULT_TENANT_ID,
+        userId,
+        fileName,
+        contentType,
+      }),
+    });
+    if (!response.ok) throw new Error('Unable to get presigned upload URL');
+    return await response.json();
+  } catch (error) {
+    console.warn('Profile image upload URL request failed:', error);
+    return null;
+  }
+}
+
+async function uploadProfileImageToS3(uploadUrl, file) {
+  try {
+    const response = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': file.type,
+      },
+      body: file,
+    });
+    return response.ok;
+  } catch (error) {
+    console.warn('Profile image upload failed:', error);
+    return false;
+  }
+}
+
+async function removeProfileImageFromServer(userId, imageKey) {
+  const removeUrlEndpoint = window.PROFILE_IMAGE_REMOVE_URL || '';
+  if (!removeUrlEndpoint || !userId || !imageKey) {
+    return false;
+  }
+
+  try {
+    const response = await fetch(removeUrlEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenantId: window.DEFAULT_TENANT_ID,
+        userId,
+        imageKey,
+      }),
+    });
+    return response.ok;
+  } catch (error) {
+    console.warn('Profile image remove request failed:', error);
+    return false;
+  }
 }
 
 async function syncProfileToApi(profile, userId = null) {
@@ -214,6 +375,8 @@ async function loadProfileFromApi() {
         department: profile.department || '',
         idCardNumber: profile.idCardNumber || '',
         emailAddress: profile.emailAddress || session.email,
+        profileImageUrl: profile.profileImageUrl || '',
+        profileImageKey: profile.profileImageKey || '',
       });
       return getProfile();
     }
@@ -533,6 +696,7 @@ async function renderProfilePage() {
   if (departmentField) departmentField.value = profile.department || '';
   if (idCardField) idCardField.value = profile.idCardNumber || '';
   if (emailField) emailField.value = displayEmail;
+  renderProfileAvatar(profile);
   const debugEl = document.getElementById('profileDebug');
   try {
     if (debugEl) {
@@ -545,41 +709,91 @@ async function renderProfilePage() {
   }
 }
 
-function handleLogin(event) {
+function initializeEditProfileForm() {
+  const profile = getProfile();
+  if (profileForm) {
+    const fullNameField = document.getElementById('fullName');
+    const departmentField = document.getElementById('department');
+    const idCardField = document.getElementById('idCardNumber');
+    const emailField = document.getElementById('emailAddress');
+    if (fullNameField) fullNameField.value = profile.fullName || '';
+    if (departmentField) departmentField.value = profile.department || '';
+    if (idCardField) idCardField.value = profile.idCardNumber || '';
+    if (emailField) emailField.value = profile.emailAddress || getSession()?.email || '';
+  }
+
+  if (profileImageUrlInput) {
+    profileImageUrlInput.value = profile.profileImageUrl || '';
+  }
+  setProfileImagePreview(getProfileImagePreviewSource(profile));
+  renderProfileAvatar(profile);
+}
+
+async function handleProfileUpdate(event) {
   event.preventDefault();
 
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  const users = getUsers();
-  const user = users.find((entry) => entry.emailAddress === email);
+  const profile = {
+    fullName: document.getElementById('fullName').value.trim(),
+    department: document.getElementById('department').value.trim(),
+    idCardNumber: document.getElementById('idCardNumber').value.trim(),
+    emailAddress: document.getElementById('emailAddress').value.trim(),
+  };
 
-  if (email === 'amina@tenant.com' && password === 'password123') {
-    const session = { name: 'Amina Yusuf', email };
-    const profile = {
-      fullName: 'Amina Yusuf',
-      department: 'Maintenance Engineering',
-      idCardNumber: 'ENG-1024',
-      emailAddress: email,
-    };
+  const currentProfile = getProfile();
+  const userId = getSession()?.email || profile.emailAddress;
+  const file = profileImageFileInput?.files?.[0];
 
-    saveSession(session);
-    saveProfile(profile);
-    if (loginMessage) loginMessage.textContent = 'Login successful. Redirecting...';
-    window.location.href = 'profile.html';
-  } else if (user && user.password === password) {
-    const session = { name: user.fullName, email: user.emailAddress };
-    saveSession(session);
-    saveProfile({
-      fullName: user.fullName,
-      department: user.department,
-      idCardNumber: user.idCardNumber,
-      emailAddress: user.emailAddress,
-    });
-    if (loginMessage) loginMessage.textContent = 'Login successful. Redirecting...';
-    window.location.href = 'profile.html';
+  if (profileImageClearRequested) {
+    if (currentProfile.profileImageKey) {
+      await removeProfileImageFromServer(userId, currentProfile.profileImageKey);
+    }
+    profile.profileImageData = '';
+    profile.profileImageUrl = '';
+    profile.profileImageKey = '';
+  } else if (file) {
+    try {
+      profile.profileImageData = await readFileAsDataUrl(file);
+    } catch (error) {
+      console.warn('Unable to read profile image file', error);
+    }
+
+    const signedData = await getPresignedProfileImageUploadUrl(file.name, file.type, userId);
+    if (signedData?.uploadUrl) {
+      const uploaded = await uploadProfileImageToS3(signedData.uploadUrl, file);
+      if (uploaded) {
+        profile.profileImageUrl = signedData.imageUrl;
+        profile.profileImageKey = signedData.imageKey;
+      }
+    }
+  } else if (profileImageUrlInput?.value.trim()) {
+    const url = profileImageUrlInput.value.trim();
+    if (currentProfile.profileImageKey && currentProfile.profileImageUrl !== url) {
+      await removeProfileImageFromServer(userId, currentProfile.profileImageKey);
+      profile.profileImageKey = '';
+    }
+    profile.profileImageUrl = url;
+    profile.profileImageData = '';
   } else {
-    if (loginMessage) loginMessage.textContent = 'Invalid email or password.';
+    profile.profileImageData = currentProfile.profileImageData || '';
+    profile.profileImageUrl = currentProfile.profileImageUrl || '';
+    profile.profileImageKey = currentProfile.profileImageKey || '';
   }
+
+  saveProfile(profile);
+
+  const syncedProfile = await syncProfileToApi(profile, userId);
+
+  if (syncedProfile) {
+    if (profileMessage) profileMessage.textContent = 'Profile updated successfully.';
+  } else {
+    if (profileMessage) profileMessage.textContent = 'Profile saved locally. AWS sync will retry later.';
+  }
+
+  renderProfilePage();
+}
+
+function handleResetPassword() {
+  if (profileMessage) profileMessage.textContent = 'Password reset link sent to your email.';
 }
 
 async function handleRegister(event) {
@@ -633,29 +847,6 @@ async function handleRegister(event) {
   window.location.href = 'profile.html';
 }
 
-async function handleProfileUpdate(event) {
-  event.preventDefault();
-
-  const profile = {
-    fullName: document.getElementById('fullName').value.trim(),
-    department: document.getElementById('department').value.trim(),
-    idCardNumber: document.getElementById('idCardNumber').value.trim(),
-    emailAddress: document.getElementById('emailAddress').value.trim(),
-  };
-
-  saveProfile(profile);
-
-  const syncedProfile = await syncProfileToApi(profile, getSession()?.email || profile.emailAddress);
-
-  if (syncedProfile) {
-    if (profileMessage) profileMessage.textContent = 'Profile updated successfully.';
-  } else {
-    if (profileMessage) profileMessage.textContent = 'Profile saved locally. AWS sync will retry later.';
-  }
-
-  renderProfilePage();
-}
-
 function handleResetPassword() {
   if (profileMessage) profileMessage.textContent = 'Password reset link sent to your email.';
 }
@@ -663,6 +854,43 @@ function handleResetPassword() {
 function handleLogout() {
   clearSession();
   window.location.href = 'login.html';
+}
+
+function handleLogin(event) {
+  event.preventDefault();
+
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const users = getUsers();
+  const user = users.find((entry) => entry.emailAddress === email);
+
+  if (email === 'amina@tenant.com' && password === 'password123') {
+    const session = { name: 'Amina Yusuf', email };
+    const profile = {
+      fullName: 'Amina Yusuf',
+      department: 'Maintenance Engineering',
+      idCardNumber: 'ENG-1024',
+      emailAddress: email,
+    };
+
+    saveSession(session);
+    saveProfile(profile);
+    if (loginMessage) loginMessage.textContent = 'Login successful. Redirecting...';
+    window.location.href = 'profile.html';
+  } else if (user && user.password === password) {
+    const session = { name: user.fullName, email: user.emailAddress };
+    saveSession(session);
+    saveProfile({
+      fullName: user.fullName,
+      department: user.department,
+      idCardNumber: user.idCardNumber,
+      emailAddress: user.emailAddress,
+    });
+    if (loginMessage) loginMessage.textContent = 'Login successful. Redirecting...';
+    window.location.href = 'profile.html';
+  } else {
+    if (loginMessage) loginMessage.textContent = 'Invalid email or password.';
+  }
 }
 
 if (form) {
@@ -722,6 +950,18 @@ if (profileForm) {
   profileForm.addEventListener('submit', handleProfileUpdate);
 }
 
+if (profileImageFileInput) {
+  profileImageFileInput.addEventListener('change', handleProfileImageFileChange);
+}
+
+if (profileImageUrlInput) {
+  profileImageUrlInput.addEventListener('input', handleProfileImageUrlChange);
+}
+
+if (removeProfileImageBtn) {
+  removeProfileImageBtn.addEventListener('click', clearProfileImageSelection);
+}
+
 if (resetPasswordBtn) {
   resetPasswordBtn.addEventListener('click', handleResetPassword);
 }
@@ -734,6 +974,7 @@ if (transportTypeSelect) {
   transportTypeSelect.addEventListener('change', updateVehiclePlateRequirement);
 }
 
+initializeEditProfileForm();
 updateVehiclePlateRequirement();
 renderEntries();
 renderCompanyChart();

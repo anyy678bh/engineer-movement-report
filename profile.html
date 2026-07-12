@@ -24,7 +24,10 @@
     <main class="profile-shell">
       <section class="profile-card">
         <div class="profile-header">
-          <div class="avatar">AU</div>
+          <div class="avatar" id="profileAvatar">
+            <img id="profileAvatarImg" alt="Profile photo" />
+            <span id="profileAvatarInitials">AU</span>
+          </div>
           <div>
             <h2 id="profileName">User Name</h2>
             <p id="profileEmail" class="muted">user@company.com</p>
@@ -65,6 +68,26 @@
         setText('profileDepartment', profile.department || '—');
         setText('profileIdCard', profile.idCardNumber || '—');
         setText('profileEmailDisplay', profile.emailAddress || displayEmail);
+
+        const avatarImg = document.getElementById('profileAvatarImg');
+        const avatarInitials = document.getElementById('profileAvatarInitials');
+        const imageSource = profile.profileImageUrl || profile.profileImageData;
+        if (avatarImg && avatarInitials) {
+          if (imageSource) {
+            avatarImg.src = imageSource;
+            avatarImg.style.display = 'block';
+            avatarInitials.style.display = 'none';
+          } else {
+            avatarImg.style.display = 'none';
+            avatarInitials.textContent = displayName
+              .split(' ')
+              .map((part) => part[0] || '')
+              .slice(0, 2)
+              .join('')
+              .toUpperCase();
+            avatarInitials.style.display = 'grid';
+          }
+        }
 
         const debugEl = document.getElementById('profileDebug');
         if (debugEl) {
