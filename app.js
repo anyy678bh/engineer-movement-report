@@ -654,6 +654,212 @@ async function renderRecentEntriesPage() {
   renderResults(recentEntries);
 }
 
+function getAnalysisEntries() {
+  const { items = [] } = loadReportsFromApi();
+  return items.length ? items : getEntries();
+}
+
+function buildAnalysisSummary(entries, period, companyFilter, selectedDate, selectedWeek) {
+  const filteredEntries = entries.filter((entry) => {
+    const company = (entry.companyName || entry.companyNameAttended || '').toString().toLowerCase();
+    const matchesCompany = !companyFilter || company.includes(companyFilter.toLowerCase());
+    return matchesCompany;
+  });
+
+  const grouped = filteredEntries.reduce((accumulator, entry) => {
+    const rawDate = entry.date || entry.createdAt || '';
+    const parsedDate = new Date(rawDate);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return accumulator;
+    }
+
+    const entryMonth = parsedDate.getMonth() + 1;
+    const entryYear = parsedDate.getFullYear();
+    const weekNumber = getWeekNumber(parsedDate);
+    const selectedDateValue = selectedDate ? new Date(selectedDate) : null;
+    const matchesDate = !selectedDateValue || (() => {
+      if (period === 'month') {
+        return parsedDate.getFullYear() === selectedDateValue.getFullYear()
+          && parsedDate.getMonth() === selectedDateValue.getMonth();
+      }
+      return parsedDate.toDateString() === selectedDateValue.toDateString();
+    })();
+    const matchesWeek = !selectedWeek || weekNumber === Number(selectedWeek);
+    const matchesPeriod = period === 'week'
+      ? matchesDate && matchesWeek
+      : matchesDate;
+
+    if (!matchesPeriod) {
+      return accumulator;
+    }
+
+    const key = period === 'week'
+      ? `${entryYear}-${String(entryMonth).padStart(2, '0')} • W${weekNumber}`
+      : `${entryYear}-${String(entryMonth).padStart(2, '0')}`;
+
+    const company = (entry.companyName || entry.companyNameAttended || 'Unknown').trim();
+    if (!accumulator[company]) {
+      accumulator[company] = {};
+    }
+
+    accumulator[company][key] = (accumulator[company][key] || 0) + 1;
+    return accumulator;
+  }, {});
+
+  return { grouped, filteredEntries };
+}
+
+function getWeekNumber(date) {
+  const start = new Date(date.getFullYear(), 0, 1);
+  const days = Math.floor((date - start) / 86400000);
+  return Math.ceil((days + start.getDay() + 1) / 7);
+}
+
+async function renderAnalyticsPage() {
+  const form = document.getElementById('analyticsQueryForm');
+  const summary = document.getElementById('analyticsSummary');
+  const chart = document.getElementById('analyticsChart');
+  const topPerformers = document.getElementById('analyticsTopPerformers');
+  const tableWrap = document.getElementById('analyticsTableWrap');
+  const clearButton = document.getElementById('clearAnalyticsBtn');
+  const analysisDate = document.getElementById('analysisDate');
+  const weekInput = document.getElementById('analysisWeek');
+  const periodSelect = document.getElementById('analysisPeriod');
+  if (!form || !summary || !chart || !topPerformers || !tableWrap || !analysisDate || !weekInput || !periodSelect) return;
+
+  const updateDateInputMode = () => {
+    if (periodSelect.value === 'week') {
+      analysisDate.type = 'date';
+      analysisDate.setAttribute('placeholder', 'Select a date');
+    } else {
+      analysisDate.type = 'month';
+      analysisDate.setAttribute('placeholder', 'Select a month');
+    }
+  };
+
+  const entries = await getAnalysisEntries();
+  const renderResults = (period = 'month', companyFilter = '', selectedDate = '', selectedWeek = '') => {
+    const { grouped, filteredEntries } = buildAnalysisSummary(entries, period, companyFilter, selectedDate, selectedWeek);
+    const companies = Object.entries(grouped).sort((a, b) => {
+      const aValue = Object.values(b[1]).reduce((sum, value) => sum + value, 0);
+      const bValue = Object.values(a[1]).reduce((sum, value) => sum + value, 0);
+      return aValue - bValue;
+    });
+
+    if (!companies.length) {
+      summary.innerHTML = '<div class="empty">No matching results found.</div>';
+      chart.innerHTML = '<div class="empty">Try a broader search.</div>';
+      topPerformers.innerHTML = '<div class="empty">No top performers yet.</div>';
+      tableWrap.innerHTML = '<div class="empty">No matching rows.</div>';
+      return;
+    }
+
+    const periodKeys = [...new Set(companies.flatMap(([, months]) => Object.keys(months)))].sort();
+    const maxValue = Math.max(1, ...companies.flatMap(([, months]) => Object.values(months)));
+    const topCompanies = [...companies].slice(0, 4);
+
+    const selectedDateLabel = selectedDate ? new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'All dates';
+    const selectedWeekLabel = selectedWeek ? `Week ${selectedWeek}` : '';
+    const periodDetail = period === 'week'
+      ? `${selectedDateLabel}${selectedWeekLabel ? ` • ${selectedWeekLabel}` : ''}`
+      : selectedDateLabel;
+
+    summary.innerHTML = `
+      <div class="summary-pill">
+        <strong>${filteredEntries.length}</strong>
+        <span>matching visits</span>
+      </div>
+      <div class="summary-pill">
+        <strong>${companies.length}</strong>
+        <span>companies shown</span>
+      </div>
+      <div class="summary-pill">
+        <strong>${periodDetail}</strong>
+        <span>period details</span>
+      </div>
+    `;
+
+    topPerformers.innerHTML = `
+      <h3>Top-performing companies</h3>
+      <div class="analytics-list">
+        ${topCompanies.map(([company, values]) => `
+          <div class="analytics-list-item">
+            <span>${company}</span>
+            <strong>${Object.values(values).reduce((sum, value) => sum + value, 0)} visits</strong>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    tableWrap.innerHTML = `
+      <h3>Matched results</h3>
+      <table class="analytics-table">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>${period === 'week' ? 'Week' : 'Month'}</th>
+            <th>Visits</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${companies.map(([company, values]) => `
+            <tr>
+              <td>${company}</td>
+              <td>${periodKeys.join(', ')}</td>
+              <td>${Object.values(values).reduce((sum, value) => sum + value, 0)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+
+    chart.innerHTML = `
+      <div class="monthly-chart">
+        <div class="chart-grid">
+          ${periodKeys.map((periodKey) => `<div class="chart-month-label">${periodKey}</div>`).join('')}
+        </div>
+        ${companies.map(([company, values]) => `
+          <div class="series-row">
+            <div class="series-label">${company}</div>
+            <div class="series-bars">
+              ${periodKeys.map((periodKey) => {
+                const value = values[periodKey] || 0;
+                const height = value === 0 ? 0 : Math.max(12, (value / maxValue) * 100);
+                return `<div class="series-bar" title="${company} in ${periodKey}: ${value}"><div class="series-fill" style="--bar-height: ${height}%; animation-delay: ${Math.random() * 0.3}s"></div><span class="series-value">${value}</span></div>`;
+              }).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  };
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const period = periodSelect.value;
+    const companyFilter = document.getElementById('analysisCompany').value.trim();
+    const selectedDate = analysisDate.value;
+    const selectedWeek = weekInput.value.trim();
+    renderResults(period, companyFilter, selectedDate, selectedWeek);
+  });
+
+  clearButton?.addEventListener('click', () => {
+    form.reset();
+    analysisDate.value = '';
+    weekInput.value = '';
+    renderResults('month', '', '', '');
+  });
+
+  periodSelect.addEventListener('change', () => {
+    weekInput.disabled = periodSelect.value !== 'week';
+    updateDateInputMode();
+  });
+
+  weekInput.disabled = periodSelect.value !== 'week';
+  updateDateInputMode();
+  renderResults('month', '', '', '');
+}
+
 async function renderProfilePage() {
   const session = getSession();
   let profile = getProfile();
@@ -980,4 +1186,5 @@ renderEntries();
 renderCompanyChart();
 renderHomeGreeting();
 renderRecentEntriesPage();
+renderAnalyticsPage();
 renderProfilePage();

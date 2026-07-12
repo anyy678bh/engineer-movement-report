@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analytics | Engineer Movement Report</title>
+    <link rel="stylesheet" href="styles.css?v=20260713" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-row">
+        <div>
+          <p class="eyebrow">Field service operations</p>
+          <h1>Analytics workspace</h1>
+          <p class="subtitle">Query visits by time period and company visited to surface patterns in your movement report history.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="auth-link" href="index.html">Reports</a>
+          <a class="auth-link" href="recent-entries.html">Recent</a>
+          <a class="auth-link" href="profile.html">Profile</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout single-column">
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <p class="section-kicker">Query analysis</p>
+            <h2>Filter by month or week</h2>
+          </div>
+          <span class="pill subtle">Company insights</span>
+        </div>
+        <p class="card-copy">Use the controls below to focus the analysis on a specific period and company visited.</p>
+
+        <form id="analyticsQueryForm" class="query-form">
+          <div class="query-row">
+            <label>
+              Query key
+              <select id="analysisPeriod">
+                <option value="month">Month</option>
+                <option value="week">Week</option>
+              </select>
+            </label>
+            <label>
+              Company visited
+              <input type="text" id="analysisCompany" placeholder="e.g. Acme" />
+            </label>
+          </div>
+          <div class="query-row">
+            <label>
+              Select date
+              <input type="month" id="analysisDate" />
+            </label>
+            
+          </div>
+          <div class="query-actions">
+            <button type="submit">Run analysis</button>
+            <button type="button" class="ghost" id="clearAnalyticsBtn">Clear</button>
+          </div>
+        </form>
+
+        <div id="analyticsSummary" class="chart-summary"></div>
+        <div id="analyticsChart" class="chart-panel"></div>
+        <div id="analyticsTopPerformers" class="detail-card"></div>
+        <div id="analyticsTableWrap" class="detail-card"></div>
+      </section>
+    </main>
+
+    <script src="config.js?v=20260713"></script>
+    <script src="app.js?v=20260713"></script>
+  </body>
+</html>
