@@ -36,12 +36,10 @@ Resources:
   UserProfileImagesBucket:
     Type: AWS::S3::Bucket
     Properties:
-      AccessControl: PublicRead
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: false
-        BlockPublicPolicy: false
-        IgnorePublicAcls: false
-        RestrictPublicBuckets: false
+      BucketName: engineer-movement-profile-images
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
 
   ProfileFunction:
     Type: AWS::Serverless::Function
