@@ -971,8 +971,100 @@ async function handleProfileUpdate(event) {
   renderProfilePage();
 }
 
+function setResetMode(isConfirmMode) {
+  const requestSection = document.getElementById('resetRequestSection');
+  const confirmSection = document.getElementById('resetConfirmSection');
+  const submitButton = document.getElementById('passwordResetSubmit');
+
+  if (requestSection) requestSection.classList.toggle('hidden', isConfirmMode);
+  if (confirmSection) confirmSection.classList.toggle('hidden', !isConfirmMode);
+  if (submitButton) submitButton.textContent = isConfirmMode ? 'Reset password' : 'Send reset link';
+}
+
+function initializePasswordResetForm() {
+  const emailInput = document.getElementById('resetEmail');
+  const message = document.getElementById('passwordResetMessage');
+  const params = new URLSearchParams(window.location.search);
+  const email = params.get('email') || '';
+
+  if (emailInput && email) {
+    emailInput.value = email;
+  }
+
+  const isConfirmMode = Boolean(email);
+  setResetMode(isConfirmMode);
+
+  if (message) {
+    if (isConfirmMode) {
+      message.textContent = `Enter a new password for ${email}.`;
+    } else {
+      message.textContent = 'Enter your email to receive a password reset link.';
+    }
+  }
+}
+
 function handleResetPassword() {
-  if (profileMessage) profileMessage.textContent = 'Password reset link sent to your email.';
+  const session = getSession();
+  const email = session?.email || getProfile()?.emailAddress;
+  if (!email) {
+    if (profileMessage) profileMessage.textContent = 'Please log in or set your email before requesting a reset.';
+    return;
+  }
+
+  window.location.href = `reset-password.html?email=${encodeURIComponent(email)}`;
+}
+
+async function handleResetRequest(event) {
+  event.preventDefault();
+  const emailInput = document.getElementById('resetEmail');
+  const email = emailInput?.value.trim();
+  const message = document.getElementById('passwordResetMessage');
+
+  if (!email) {
+    if (message) message.textContent = 'Enter your email address to receive a reset link.';
+    return;
+  }
+
+  if (message) {
+    message.textContent = `If an account exists for ${email}, a reset link has been sent.`;
+  }
+
+  if (emailInput) emailInput.value = email;
+  window.history.replaceState({}, '', `reset-password.html?email=${encodeURIComponent(email)}`);
+  setResetMode(true);
+}
+
+async function handlePasswordReset(event) {
+  event.preventDefault();
+  const email = document.getElementById('resetEmail')?.value.trim();
+  const password = document.getElementById('resetPassword')?.value;
+  const confirmPassword = document.getElementById('resetConfirmPassword')?.value;
+  const message = document.getElementById('passwordResetMessage');
+
+  if (!email || !password || !confirmPassword) {
+    if (message) message.textContent = 'Complete all fields to reset your password.';
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    if (message) message.textContent = 'Passwords do not match.';
+    return;
+  }
+
+  const users = getUsers();
+  const user = users.find((item) => item.emailAddress === email);
+  if (!user) {
+    if (message) message.textContent = 'No account exists for that email.';
+    return;
+  }
+
+  user.password = password;
+  saveUsers(users);
+
+  if (message) message.textContent = 'Password reset successfully. Please sign in with your new password.';
+  setTimeout(() => {
+    window.location.href = 'login.html';
+  }, 1200);
 }
 
 async function handleRegister(event) {
@@ -1024,10 +1116,6 @@ async function handleRegister(event) {
   }
 
   window.location.href = 'profile.html';
-}
-
-function handleResetPassword() {
-  if (profileMessage) profileMessage.textContent = 'Password reset link sent to your email.';
 }
 
 function handleLogout() {
@@ -1140,6 +1228,27 @@ if (removeProfileImageBtn) {
 if (resetPasswordBtn) {
   resetPasswordBtn.addEventListener('click', handleResetPassword);
 }
+
+const passwordResetForm = document.getElementById('passwordResetForm');
+if (passwordResetForm) {
+  passwordResetForm.addEventListener('submit', (event) => {
+    const isResetting = !document.getElementById('resetConfirmSection')?.classList.contains('hidden');
+    if (isResetting) {
+      handlePasswordReset(event);
+    } else {
+      handleResetRequest(event);
+    }
+  });
+}
+
+const cancelResetLink = document.getElementById('cancelResetLink');
+if (cancelResetLink) {
+  cancelResetLink.addEventListener('click', () => {
+    window.location.href = 'login.html';
+  });
+}
+
+initializePasswordResetForm();
 
 if (logoutBtn) {
   logoutBtn.addEventListener('click', handleLogout);
