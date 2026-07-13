@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Add a Lambda and API endpoint for user profile storage
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 30
+Resources:
+  ProfileApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: '''OPTIONS,GET,POST'''
+        AllowHeaders: '''Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'''
+        AllowOrigin: '''*'''
+  UserProfilesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: userId
+        AttributeType: S
+      - AttributeName: tenantId
+        AttributeType: S
+      KeySchema:
+      - AttributeName: userId
+        KeyType: HASH
+      - AttributeName: tenantId
+        KeyType: RANGE
+  UserProfileImagesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      OwnershipControls:
+        Rules:
+        - ObjectOwnership: BucketOwnerEnforced
+  ProfileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ProfileFunction
+      Handler: index.handler
+      Environment:
+        Variables:
+          USER_PROFILES_TABLE:
+            Ref: UserProfilesTable
+          PROFILE_IMAGES_BUCKET:
+            Ref: UserProfileImagesBucket
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UserProfilesTable
+      - S3CrudPolicy:
+          BucketName:
+            Ref: UserProfileImagesBucket
+      Events:
+        ProfileApi:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: ProfileApi
+            Path: /profile
+            Method: any
+        ProfileImageUploadApi:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: ProfileApi
+            Path: /profile/image-upload
+            Method: any
+        ProfileImageRemoveApi:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: ProfileApi
+            Path: /profile/image-remove
+            Method: any
+    Metadata:
+      SamResourceId: ProfileFunction
+Outputs:
+  ProfileApiEndpoint:
+    Value:
+      Fn::Sub: https://${ProfileApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/profile
+  ProfileImageUploadEndpoint:
+    Value:
+      Fn::Sub: https://${ProfileApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/profile/image-upload
+  ProfileImageRemoveEndpoint:
+    Value:
+      Fn::Sub: https://${ProfileApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/profile/image-remove

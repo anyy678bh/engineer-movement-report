@@ -20,7 +20,6 @@ Resources:
   UserProfilesTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: engineer-user-profiles
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: userId
@@ -36,7 +35,6 @@ Resources:
   UserProfileImagesBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: engineer-movement-profile-images
       OwnershipControls:
         Rules:
           - ObjectOwnership: BucketOwnerEnforced
