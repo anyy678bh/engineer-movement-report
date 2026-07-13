@@ -23,6 +23,25 @@ const profileKey = 'engineer-user-profile';
 const usersKey = 'engineer-users';
 let profileImageClearRequested = false;
 
+function getStorageKey(baseKey, userEmail = '') {
+  const normalizedEmail = String(userEmail || '').trim().toLowerCase();
+  return normalizedEmail ? `${baseKey}:${normalizedEmail}` : baseKey;
+}
+
+function readStorageJson(key, fallback = null) {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
+  } catch (error) {
+    console.warn(`Unable to read storage for ${key}:`, error);
+    return fallback;
+  }
+}
+
+function writeStorageJson(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
 function getReportsKey() {
   const session = getSession();
   return session && session.email ? `${storageKey}:${session.email}` : storageKey;
@@ -109,16 +128,34 @@ async function loadReportsFromApi(startToken = null) {
 }
 
 function getProfile() {
-  try {
-    return JSON.parse(localStorage.getItem(profileKey) || '{}');
-  } catch (error) {
-    console.error('Unable to read profile:', error);
-    return {};
+  const sessionEmail = getSession()?.email || '';
+  const candidateKeys = [getStorageKey(profileKey, sessionEmail), profileKey];
+
+  for (const key of candidateKeys) {
+    const storedProfile = readStorageJson(key, null);
+    if (storedProfile && typeof storedProfile === 'object' && Object.keys(storedProfile).length) {
+      return storedProfile;
+    }
   }
+
+  return {};
 }
 
 function saveProfile(profile) {
-  localStorage.setItem(profileKey, JSON.stringify(profile));
+  const normalizedProfile = {
+    ...profile,
+    emailAddress: profile.emailAddress || getSession()?.email || '',
+    profileImageData: profile.profileImageData || '',
+    profileImageUrl: profile.profileImageUrl || '',
+    profileImageKey: profile.profileImageKey || '',
+    updatedAt: new Date().toISOString(),
+  };
+  const userEmail = String(normalizedProfile.emailAddress || '').trim().toLowerCase();
+
+  writeStorageJson(profileKey, normalizedProfile);
+  if (userEmail) {
+    writeStorageJson(getStorageKey(profileKey, userEmail), normalizedProfile);
+  }
 }
 
 function updateVehiclePlateRequirement() {
@@ -372,34 +409,39 @@ async function loadProfileFromApi() {
 }
 
 function getSession() {
-  try {
-    return JSON.parse(localStorage.getItem(authKey) || 'null');
-  } catch (error) {
-    console.error('Unable to read session:', error);
-    return null;
-  }
+  return readStorageJson(authKey, null);
 }
 
 function saveSession(session) {
-  localStorage.setItem(authKey, JSON.stringify(session));
-}
+  const normalizedSession = session && typeof session === 'object' ? session : null;
+  if (!normalizedSession) {
+    return;
+  }
 
-function clearSession() {
-  localStorage.removeItem(authKey);
-  localStorage.removeItem(profileKey);
-}
-
-function getUsers() {
-  try {
-    return JSON.parse(localStorage.getItem(usersKey) || '[]');
-  } catch (error) {
-    console.error('Unable to read users:', error);
-    return [];
+  const userEmail = String(normalizedSession.email || '').trim().toLowerCase();
+  writeStorageJson(authKey, normalizedSession);
+  if (userEmail) {
+    writeStorageJson(getStorageKey(authKey, userEmail), normalizedSession);
   }
 }
 
+function clearSession() {
+  const session = getSession();
+  const userEmail = String(session?.email || '').trim().toLowerCase();
+  localStorage.removeItem(authKey);
+  localStorage.removeItem(profileKey);
+  if (userEmail) {
+    localStorage.removeItem(getStorageKey(authKey, userEmail));
+    localStorage.removeItem(getStorageKey(profileKey, userEmail));
+  }
+}
+
+function getUsers() {
+  return readStorageJson(usersKey, []);
+}
+
 function saveUsers(users) {
-  localStorage.setItem(usersKey, JSON.stringify(users));
+  writeStorageJson(usersKey, users);
 }
 
 function setFormStatus(message, type = 'success') {

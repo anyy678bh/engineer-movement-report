@@ -53,8 +53,10 @@
 
     <script>
       (function () {
-        const profile = JSON.parse(localStorage.getItem('engineer-user-profile') || '{}');
         const session = JSON.parse(localStorage.getItem('engineer-user-session') || 'null');
+        const email = (session && session.email ? session.email : '').trim().toLowerCase();
+        const profileStorageKey = email ? `engineer-user-profile:${email}` : 'engineer-user-profile';
+        const profile = JSON.parse(localStorage.getItem(profileStorageKey) || localStorage.getItem('engineer-user-profile') || '{}');
         const displayName = profile.fullName || (session && session.name) || 'Engineer User';
         const displayEmail = profile.emailAddress || (session && session.email) || 'user@company.com';
         const setText = (id, value) => {
