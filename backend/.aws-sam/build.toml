@@ -9,4 +9,22 @@ manifest_hash = "fae8f3a68c260fefda9a84af7ef8fd95"
 packagetype = "Zip"
 functions = ["ProfileFunction"]
 
+[function_build_definitions.59b5ae37-a619-45d9-aa9c-cc8c4ac03a87]
+codeuri = "C:\\Users\\Admin\\Downloads\\engineer-movement-report\\backend\\lambda\\createReport"
+runtime = "nodejs20.x"
+architecture = "x86_64"
+handler = "index.handler"
+manifest_hash = ""
+packagetype = "Zip"
+functions = ["CreateReportFunction"]
+
+[function_build_definitions.67f6e46d-dff8-4f79-b939-efd797bcf7c0]
+codeuri = "C:\\Users\\Admin\\Downloads\\engineer-movement-report\\backend\\lambda\\listReports"
+runtime = "nodejs20.x"
+architecture = "x86_64"
+handler = "index.handler"
+manifest_hash = ""
+packagetype = "Zip"
+functions = ["ListReportsFunction"]
+
 [layer_build_definitions]

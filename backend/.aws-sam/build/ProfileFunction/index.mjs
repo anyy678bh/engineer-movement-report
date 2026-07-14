@@ -59,7 +59,6 @@ export const handler = async (event) => {
       Bucket: bucketName,
       Key: imageKey,
       ContentType: contentType,
-      ACL: 'public-read',
     });
 
     const uploadUrl = await getSignedUrl(s3Client, uploadCommand, { expiresIn: 3600 });

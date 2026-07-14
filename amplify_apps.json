@@ -1,0 +1,41 @@
+{
+    "apps": [
+        {
+            "appId": "d369y0ycnp7jn3",
+            "appArn": "arn:aws:amplify:us-east-1:435998720983:apps/d369y0ycnp7jn3",
+            "name": "engineer-movement-report",
+            "tags": {},
+            "repository": "https://github.com/Dominionpr/engineer-movement-report",
+            "platform": "WEB",
+            "createTime": "2026-07-13T02:27:58.385000+01:00",
+            "updateTime": "2026-07-13T02:27:58.385000+01:00",
+            "defaultDomain": "d369y0ycnp7jn3.amplifyapp.com",
+            "enableBranchAutoBuild": false,
+            "enableBranchAutoDeletion": false,
+            "enableBasicAuth": false,
+            "customRules": [
+                {
+                    "source": "/<*>",
+                    "target": "/index.html",
+                    "status": "404-200"
+                }
+            ],
+            "productionBranch": {
+                "lastDeployTime": "2026-07-13T07:06:13.975000+01:00",
+                "status": "SUCCEED",
+                "branchName": "master"
+            },
+            "buildSpec": "version: 1\nfrontend:\n  phases:\n    preBuild:\n      commands:\n        - echo \"No build step required for this static prototype\"\n    build:\n      commands:\n        - echo \"Publishing static site\"\n  artifacts:\n    baseDirectory: .\n    files:\n      - '**/*'\n  cache:\n    paths: []\n",
+            "customHeaders": "",
+            "enableAutoBranchCreation": false,
+            "repositoryCloneMethod": "TOKEN",
+            "cacheConfig": {
+                "type": "AMPLIFY_MANAGED_NO_COOKIES"
+            },
+            "webhookCreateTime": "2026-07-13T02:27:58.184000+01:00",
+            "jobConfig": {
+                "buildComputeType": "STANDARD_8GB"
+            }
+        }
+    ]
+}

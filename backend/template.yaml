@@ -102,6 +102,21 @@ Resources:
         BlockPublicPolicy: false
         IgnorePublicAcls: false
         RestrictPublicBuckets: false
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - GET
+              - PUT
+              - POST
+              - HEAD
+            AllowedOrigins:
+              - "http://127.0.0.1:8000"
+              - "http://localhost:8000"
+              - "http://localhost"
+              - "https://d369y0ycnp7jn3.amplifyapp.com"
+            MaxAgeSeconds: 3000
 
   ProfileFunction:
     Type: AWS::Serverless::Function
