@@ -25,6 +25,8 @@ export const handler = async (event) => {
   const tenantId = body.tenantId || 'default';
   const reportId = body.reportId || crypto.randomUUID();
 
+  const hoursSpent = Number(body.hoursSpent ?? 0);
+
   const item = {
     pk: `tenant#${tenantId}`,
     sk: `report#${reportId}`,
@@ -36,6 +38,7 @@ export const handler = async (event) => {
     transportType: body.transportType,
     machineType: body.machineType,
     serviceRendered: body.serviceRendered,
+    hoursSpent: Number.isFinite(hoursSpent) && hoursSpent >= 0 ? hoursSpent : 0,
     createdAt: new Date().toISOString(),
   };
 
