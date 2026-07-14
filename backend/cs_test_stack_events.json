@@ -1,0 +1,15 @@
+{
+    "StackEvents": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:435998720983:stack/test-bucket-validation-001/5f6c07f0-7f51-11f1-ac91-12e6e893d7c1",
+            "EventId": "5f6b92c0-7f51-11f1-ac91-12e6e893d7c1",
+            "StackName": "test-bucket-validation-001",
+            "LogicalResourceId": "test-bucket-validation-001",
+            "PhysicalResourceId": "arn:aws:cloudformation:us-east-1:435998720983:stack/test-bucket-validation-001/5f6c07f0-7f51-11f1-ac91-12e6e893d7c1",
+            "ResourceType": "AWS::CloudFormation::Stack",
+            "Timestamp": "2026-07-14T06:58:09.598000+00:00",
+            "ResourceStatus": "REVIEW_IN_PROGRESS",
+            "ResourceStatusReason": "User Initiated"
+        }
+    ]
+}

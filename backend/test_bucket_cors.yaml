@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: S3 bucket with only CorsConfiguration
+Resources:
+  UserProfileImagesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      CorsConfiguration:
+        CorsRules:
+        - AllowedMethods:
+          - GET
+          - PUT
+          - POST
+          - HEAD
+          AllowedOrigins:
+          - localhost:3000
+          - localhost:8000
+          - http://localhost:3000
+          - http://localhost:8000
+          - 'https://*.amplifyapp.com'
+          AllowedHeaders:
+          - '*'

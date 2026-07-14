@@ -1,0 +1,7 @@
+{
+    "Parameters": [],
+    "Description": "Engineer Movement Report backend using Lambda, API Gateway, DynamoDB, and Cognito",
+    "Capabilities": [
+        "CAPABILITY_AUTO_EXPAND"
+    ]
+}

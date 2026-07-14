@@ -1,0 +1,69 @@
+2026-07-14 06:58:34,727 | Config file location: C:\Users\Admin\Downloads\engineer-movement-report\backend\samconfig.toml
+2026-07-14 06:58:34,728 | Loading configuration values from [default.['package'].parameters] (env.command_name.section) in config file at 'C:\Users\Admin\Downloads\engineer-movement-report\backend\samconfig.toml'...
+2026-07-14 06:58:34,728 | Configuration values successfully loaded.
+2026-07-14 06:58:34,729 | Configuration values are: {}
+2026-07-14 06:58:34,794 | Using SAM Template at C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\template.yaml
+2026-07-14 06:58:35,145 | Telemetry endpoint configured to be https://aws-serverless-tools-telemetry.us-west-2.amazonaws.com/metrics
+2026-07-14 06:58:35,147 | Sending Telemetry: {'metrics': [{'templateWarning': {'requestId': '5d024d0a-39b3-45e0-afe6-22cc35d0036a', 'installationId': 'ae9c8980-96cc-46b3-8482-545b3bc2ce9a', 'sessionId': '060293fa-9608-48ed-8868-9a1ea4b28764', 'executionEnvironment': 'CLI', 'ci': False, 'pyversion': '3.14.3', 'samcliVersion': '1.163.0', 'osPlatform': 'Windows', 'awsProfileProvided': False, 'debugFlagProvided': True, 'region': '', 'warningName': 'CodeDeployWarning', 'warningCount': 0}}]}
+2026-07-14 06:58:37,744 | HTTPSConnectionPool(host='aws-serverless-tools-telemetry.us-west-2.amazonaws.com', port=443): Read timed out. (read timeout=0.1)
+2026-07-14 06:58:37,747 | Sending Telemetry: {'metrics': [{'templateWarning': {'requestId': 'aab94842-9d19-4640-ad2b-04c8cc59366d', 'installationId': 'ae9c8980-96cc-46b3-8482-545b3bc2ce9a', 'sessionId': '060293fa-9608-48ed-8868-9a1ea4b28764', 'executionEnvironment': 'CLI', 'ci': False, 'pyversion': '3.14.3', 'samcliVersion': '1.163.0', 'osPlatform': 'Windows', 'awsProfileProvided': False, 'debugFlagProvided': True, 'region': '', 'warningName': 'CodeDeployConditionWarning', 'warningCount': 0}}]}
+2026-07-14 06:58:40,092 | HTTPSConnectionPool(host='aws-serverless-tools-telemetry.us-west-2.amazonaws.com', port=443): Read timed out. (read timeout=0.1)
+2026-07-14 06:58:40,093 | Using config file: samconfig.toml, config environment: default
+2026-07-14 06:58:40,093 | Expand command line arguments to:
+2026-07-14 06:58:40,093 | --template_file=C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\template.yaml --s3_bucket=aws-sam-cli-managed-default-samclisourcebucket-vaj00qpavrhm --output_template_file=packaged.yaml 
+2026-07-14 06:58:40,915 | No Parameters detected in the template
+2026-07-14 06:58:41,062 | There is no customer defined id or cdk path defined for resource ReportsApi, so we will use the resource logical id as the resource id
+2026-07-14 06:58:41,062 | There is no customer defined id or cdk path defined for resource ReportsTable, so we will use the resource logical id as the resource id
+2026-07-14 06:58:41,062 | There is no customer defined id or cdk path defined for resource UserPool, so we will use the resource logical id as the resource id
+2026-07-14 06:58:41,063 | There is no customer defined id or cdk path defined for resource UserPoolClient, so we will use the resource logical id as the resource id
+2026-07-14 06:58:41,063 | Sam customer defined id is more priority than other IDs. Customer defined id for resource CreateReportFunction is CreateReportFunction
+2026-07-14 06:58:41,063 | There is no customer defined id or cdk path defined for resource UserProfilesTable, so we will use the resource logical id as the resource id
+2026-07-14 06:58:41,063 | There is no customer defined id or cdk path defined for resource UserProfileImagesBucket, so we will use the resource logical id as the resource id
+2026-07-14 06:58:41,063 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ProfileFunction is ProfileFunction
+2026-07-14 06:58:41,064 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ListReportsFunction is ListReportsFunction
+2026-07-14 06:58:41,071 | 0 stacks found in the template
+2026-07-14 06:58:41,072 | No Parameters detected in the template
+2026-07-14 06:58:41,191 | There is no customer defined id or cdk path defined for resource ReportsApi, so we will use the resource logical id as the resource id
+2026-07-14 06:58:41,191 | There is no customer defined id or cdk path defined for resource ReportsTable, so we will use the resource logical id as the resource id
+2026-07-14 06:58:41,191 | There is no customer defined id or cdk path defined for resource UserPool, so we will use the resource logical id as the resource id
+2026-07-14 06:58:41,192 | There is no customer defined id or cdk path defined for resource UserPoolClient, so we will use the resource logical id as the resource id
+2026-07-14 06:58:41,192 | Sam customer defined id is more priority than other IDs. Customer defined id for resource CreateReportFunction is CreateReportFunction
+2026-07-14 06:58:41,192 | There is no customer defined id or cdk path defined for resource UserProfilesTable, so we will use the resource logical id as the resource id
+2026-07-14 06:58:41,192 | There is no customer defined id or cdk path defined for resource UserProfileImagesBucket, so we will use the resource logical id as the resource id
+2026-07-14 06:58:41,193 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ProfileFunction is ProfileFunction
+2026-07-14 06:58:41,193 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ListReportsFunction is ListReportsFunction
+2026-07-14 06:58:42,316 | There is no customer defined id or cdk path defined for resource ReportsApi, so we will use the resource logical id as the resource id
+2026-07-14 06:58:42,316 | There is no customer defined id or cdk path defined for resource ReportsTable, so we will use the resource logical id as the resource id
+2026-07-14 06:58:42,316 | There is no customer defined id or cdk path defined for resource UserPool, so we will use the resource logical id as the resource id
+2026-07-14 06:58:42,316 | There is no customer defined id or cdk path defined for resource UserPoolClient, so we will use the resource logical id as the resource id
+2026-07-14 06:58:42,317 | Sam customer defined id is more priority than other IDs. Customer defined id for resource CreateReportFunction is CreateReportFunction
+2026-07-14 06:58:42,317 | There is no customer defined id or cdk path defined for resource UserProfilesTable, so we will use the resource logical id as the resource id
+2026-07-14 06:58:42,317 | There is no customer defined id or cdk path defined for resource UserProfileImagesBucket, so we will use the resource logical id as the resource id
+2026-07-14 06:58:42,317 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ProfileFunction is ProfileFunction
+2026-07-14 06:58:42,317 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ListReportsFunction is ListReportsFunction
+2026-07-14 06:58:42,319 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsApi is ReportsApi
+2026-07-14 06:58:42,319 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsTable is ReportsTable
+2026-07-14 06:58:42,319 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPool is UserPool
+2026-07-14 06:58:42,319 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPoolClient is UserPoolClient
+2026-07-14 06:58:42,320 | Sam customer defined id is more priority than other IDs. Customer defined id for resource CreateReportFunction is CreateReportFunction
+	Uploading to 4354b707333b72f2af36d018356fd265  820 / 820  (100.00%)
+2026-07-14 06:58:45,289 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfilesTable is UserProfilesTable
+2026-07-14 06:58:45,289 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfileImagesBucket is UserProfileImagesBucket
+2026-07-14 06:58:45,289 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ProfileFunction is ProfileFunction
+	Uploading to 42a98f58b36c90dfc8c905d747566f0b  1048576 / 2603862  (40.27%)	Uploading to 42a98f58b36c90dfc8c905d747566f0b  2097152 / 2603862  (80.54%)	Uploading to 42a98f58b36c90dfc8c905d747566f0b  2603862 / 2603862  (100.00%)
+2026-07-14 06:59:09,502 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ListReportsFunction is ListReportsFunction
+	Uploading to 84c271eba64957108b7b970ab61077e3  862 / 862  (100.00%)
+
+Successfully packaged artifacts and wrote output template to file packaged.yaml.
+Execute the following command to deploy the packaged template
+sam deploy --template-file C:\Users\Admin\Downloads\engineer-movement-report\backend\packaged.yaml --stack-name <YOUR STACK NAME>
+
+2026-07-14 06:59:10,482 | Telemetry endpoint configured to be https://aws-serverless-tools-telemetry.us-west-2.amazonaws.com/metrics
+2026-07-14 06:59:11,116 | No container socket path in global storage, falling back to DOCKER_HOST detection: 
+2026-07-14 06:59:11,117 | Telemetry endpoint configured to be https://aws-serverless-tools-telemetry.us-west-2.amazonaws.com/metrics
+2026-07-14 06:59:11,117 | Unable to find Click Context for getting session_id.
+2026-07-14 06:59:11,117 | Sending Telemetry: {'metrics': [{'commandRun': {'requestId': 'a81e0446-e68f-4bd2-9c50-850e5ffb736f', 'installationId': 'ae9c8980-96cc-46b3-8482-545b3bc2ce9a', 'sessionId': '060293fa-9608-48ed-8868-9a1ea4b28764', 'executionEnvironment': 'CLI', 'ci': False, 'pyversion': '3.14.3', 'samcliVersion': '1.163.0', 'osPlatform': 'Windows', 'awsProfileProvided': False, 'debugFlagProvided': True, 'region': '', 'commandName': 'sam package', 'metricSpecificAttributes': {'projectType': 'CFN', 'gitOrigin': '0eef1fbe49fd57ea75b837e1212ea4da79e63885b7830d05ee85795a003e7443', 'projectName': '9d972132b2dfa387b6891ac1c5afdb8a13f1f2ba1120446ac73035a07cd16f12', 'initialCommit': 'e70cd9b1e8a5030f11d29dc99c3b91faa835a85326e0c7b460a348dd98627bfc', 'containerEngine': 'docker-default', 'adminContainerPreference': None}, 'duration': 35336, 'exitReason': 'success', 'exitCode': 0}}]}
+2026-07-14 06:59:11,121 | No container socket path in global storage, falling back to DOCKER_HOST detection: 
+2026-07-14 06:59:11,121 | Sending Telemetry: {'metrics': [{'events': {'requestId': '97b0991b-06c5-4d0f-94de-7acc3cd32097', 'installationId': 'ae9c8980-96cc-46b3-8482-545b3bc2ce9a', 'sessionId': '060293fa-9608-48ed-8868-9a1ea4b28764', 'executionEnvironment': 'CLI', 'ci': False, 'pyversion': '3.14.3', 'samcliVersion': '1.163.0', 'osPlatform': 'Windows', 'commandName': 'sam package', 'metricSpecificAttributes': {'events': [{'event_name': 'SamConfigFileExtension', 'event_value': '.toml', 'thread_id': 'f23933b0461d4292bf666d4b8b8464be', 'time_stamp': '2026-07-14 05:58:34.726781+00', 'exception_name': None}, {'event_name': 'SamConfigFileExtension', 'event_value': '.toml', 'thread_id': '70e4948c53a643639242b5122691ceac', 'time_stamp': '2026-07-14 05:58:35.085043+00', 'exception_name': None}], 'containerEngine': 'docker-default'}}}]}
+2026-07-14 06:59:15,365 | HTTPSConnectionPool(host='aws-serverless-tools-telemetry.us-west-2.amazonaws.com', port=443): Read timed out. (read timeout=0.1)
+2026-07-14 06:59:15,365 | HTTPSConnectionPool(host='aws-serverless-tools-telemetry.us-west-2.amazonaws.com', port=443): Read timed out. (read timeout=0.1)

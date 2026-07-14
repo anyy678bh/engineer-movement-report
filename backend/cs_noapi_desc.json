@@ -1,0 +1,176 @@
+{
+    "Changes": [
+        {
+            "Type": "Resource",
+            "ResourceChange": {
+                "PolicyAction": "Delete",
+                "Action": "Remove",
+                "LogicalResourceId": "CreateReportFunctionCreateReportApiPermissionProd",
+                "PhysicalResourceId": "engineer-movement-report-CreateReportFunctionCreateReportApiPermissionProd-VkEQdw0REbaG",
+                "ResourceType": "AWS::Lambda::Permission",
+                "Scope": [],
+                "Details": []
+            }
+        },
+        {
+            "Type": "Resource",
+            "ResourceChange": {
+                "Action": "Modify",
+                "LogicalResourceId": "CreateReportFunction",
+                "PhysicalResourceId": "engineer-movement-report-CreateReportFunction-g4ffRvEGU1OM",
+                "ResourceType": "AWS::Lambda::Function",
+                "Replacement": "False",
+                "Scope": [
+                    "Properties"
+                ],
+                "Details": [
+                    {
+                        "Target": {
+                            "Attribute": "Properties",
+                            "Name": "Code",
+                            "RequiresRecreation": "Never"
+                        },
+                        "Evaluation": "Static",
+                        "ChangeSource": "DirectModification"
+                    }
+                ]
+            }
+        },
+        {
+            "Type": "Resource",
+            "ResourceChange": {
+                "PolicyAction": "Delete",
+                "Action": "Remove",
+                "LogicalResourceId": "ListReportsFunctionListReportsApiPermissionProd",
+                "PhysicalResourceId": "engineer-movement-report-ListReportsFunctionListReportsApiPermissionProd-K85Fi1eAP2Sr",
+                "ResourceType": "AWS::Lambda::Permission",
+                "Scope": [],
+                "Details": []
+            }
+        },
+        {
+            "Type": "Resource",
+            "ResourceChange": {
+                "Action": "Modify",
+                "LogicalResourceId": "ListReportsFunction",
+                "PhysicalResourceId": "engineer-movement-report-ListReportsFunction-0Fwp9gi8oq3j",
+                "ResourceType": "AWS::Lambda::Function",
+                "Replacement": "False",
+                "Scope": [
+                    "Properties"
+                ],
+                "Details": [
+                    {
+                        "Target": {
+                            "Attribute": "Properties",
+                            "Name": "Code",
+                            "RequiresRecreation": "Never"
+                        },
+                        "Evaluation": "Static",
+                        "ChangeSource": "DirectModification"
+                    }
+                ]
+            }
+        },
+        {
+            "Type": "Resource",
+            "ResourceChange": {
+                "Action": "Add",
+                "LogicalResourceId": "ProfileFunctionRole",
+                "ResourceType": "AWS::IAM::Role",
+                "Scope": [],
+                "Details": []
+            }
+        },
+        {
+            "Type": "Resource",
+            "ResourceChange": {
+                "Action": "Add",
+                "LogicalResourceId": "ProfileFunction",
+                "ResourceType": "AWS::Lambda::Function",
+                "Scope": [],
+                "Details": []
+            }
+        },
+        {
+            "Type": "Resource",
+            "ResourceChange": {
+                "PolicyAction": "Delete",
+                "Action": "Remove",
+                "LogicalResourceId": "ReportsApiDeployment49122dad01",
+                "PhysicalResourceId": "8heh2g",
+                "ResourceType": "AWS::ApiGateway::Deployment",
+                "Scope": [],
+                "Details": []
+            }
+        },
+        {
+            "Type": "Resource",
+            "ResourceChange": {
+                "PolicyAction": "Delete",
+                "Action": "Remove",
+                "LogicalResourceId": "ReportsApiProdStage",
+                "PhysicalResourceId": "Prod",
+                "ResourceType": "AWS::ApiGateway::Stage",
+                "Scope": [],
+                "Details": []
+            }
+        },
+        {
+            "Type": "Resource",
+            "ResourceChange": {
+                "PolicyAction": "Delete",
+                "Action": "Remove",
+                "LogicalResourceId": "ReportsApi",
+                "PhysicalResourceId": "2wq0fqrnof",
+                "ResourceType": "AWS::ApiGateway::RestApi",
+                "Scope": [],
+                "Details": []
+            }
+        },
+        {
+            "Type": "Resource",
+            "ResourceChange": {
+                "Action": "Add",
+                "LogicalResourceId": "UserProfileImagesBucket",
+                "ResourceType": "AWS::S3::Bucket",
+                "Scope": [],
+                "Details": []
+            }
+        },
+        {
+            "Type": "Resource",
+            "ResourceChange": {
+                "Action": "Add",
+                "LogicalResourceId": "UserProfilesTable",
+                "ResourceType": "AWS::DynamoDB::Table",
+                "Scope": [],
+                "Details": []
+            }
+        }
+    ],
+    "ChangeSetName": "noapi-deploy-1051846179",
+    "ChangeSetId": "arn:aws:cloudformation:us-east-1:435998720983:changeSet/noapi-deploy-1051846179/c6c892cc-4f33-4d45-b0e1-73a7eb154d16",
+    "StackId": "arn:aws:cloudformation:us-east-1:435998720983:stack/engineer-movement-report/4b18fa20-7cbc-11f1-b08b-0ec7e1e0c955",
+    "StackName": "engineer-movement-report",
+    "Description": null,
+    "Parameters": null,
+    "CreationTime": "2026-07-14T06:13:29.415000+00:00",
+    "ExecutionStatus": "UNAVAILABLE",
+    "Status": "FAILED",
+    "StatusReason": "The following hook(s)/validation failed: [AWS::EarlyValidation::PropertyValidation]. To troubleshoot Early Validation errors, use the DescribeEvents API for detailed failure information.",
+    "NotificationARNs": [],
+    "RollbackConfiguration": {},
+    "Capabilities": [
+        "CAPABILITY_IAM",
+        "CAPABILITY_AUTO_EXPAND"
+    ],
+    "Tags": null,
+    "ParentChangeSetId": null,
+    "IncludeNestedStacks": false,
+    "RootChangeSetId": null,
+    "OnStackFailure": null,
+    "ImportExistingResources": null,
+    "StackDriftStatus": null,
+    "DeploymentMode": null
+}

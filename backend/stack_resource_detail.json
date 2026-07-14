@@ -1,0 +1,5 @@
+
+aws: [ERROR]: An error occurred (ValidationError) when calling the DescribeStackResource operation: Resource UserProfileImagesBucket does not exist for stack test-bucket-validation-002
+
+Additional error details:
+Type: Sender

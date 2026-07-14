@@ -1,0 +1,38 @@
+{
+    "Changes": [
+        {
+            "Type": "Resource",
+            "ResourceChange": {
+                "Action": "Add",
+                "LogicalResourceId": "UserProfileImagesBucket",
+                "ResourceType": "AWS::S3::Bucket",
+                "Scope": [],
+                "Details": []
+            }
+        }
+    ],
+    "ChangeSetName": "create-test-145040170",
+    "ChangeSetId": "arn:aws:cloudformation:us-east-1:435998720983:changeSet/create-test-145040170/f6116da9-b3ad-4996-a066-d92661d56c35",
+    "StackId": "arn:aws:cloudformation:us-east-1:435998720983:stack/engineer-movement-report-test/7bcab400-7f4c-11f1-ad0a-120ccf9f5447",
+    "StackName": "engineer-movement-report-test",
+    "Description": null,
+    "Parameters": null,
+    "CreationTime": "2026-07-14T06:23:09.696000+00:00",
+    "ExecutionStatus": "UNAVAILABLE",
+    "Status": "FAILED",
+    "StatusReason": "The following hook(s)/validation failed: [AWS::EarlyValidation::PropertyValidation]. To troubleshoot Early Validation errors, use the DescribeEvents API for detailed failure information.",
+    "NotificationARNs": [],
+    "RollbackConfiguration": {},
+    "Capabilities": [
+        "CAPABILITY_IAM",
+        "CAPABILITY_AUTO_EXPAND"
+    ],
+    "Tags": null,
+    "ParentChangeSetId": null,
+    "IncludeNestedStacks": false,
+    "RootChangeSetId": null,
+    "OnStackFailure": null,
+    "ImportExistingResources": null,
+    "StackDriftStatus": null,
+    "DeploymentMode": null
+}

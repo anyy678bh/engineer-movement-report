@@ -1,0 +1,4 @@
+{
+    "Id": "arn:aws:cloudformation:us-west-2:435998720983:changeSet/test-minimal-001/8c844d65-22b2-4905-abbb-c2972dcc2568",
+    "StackId": "arn:aws:cloudformation:us-west-2:435998720983:stack/test-minimal-bucket/0aa078a0-7fab-11f1-ae83-02b52acd1095"
+}

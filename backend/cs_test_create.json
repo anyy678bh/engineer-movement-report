@@ -1,0 +1,4 @@
+{
+    "Id": "arn:aws:cloudformation:us-east-1:435998720983:changeSet/cs-test/95471836-503b-41f7-b452-a0b5ca0f6b50",
+    "StackId": "arn:aws:cloudformation:us-east-1:435998720983:stack/test-bucket-validation-001/5f6c07f0-7f51-11f1-ac91-12e6e893d7c1"
+}

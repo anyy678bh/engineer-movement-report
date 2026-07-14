@@ -61,14 +61,23 @@ export const handler = async (event) => {
       ContentType: contentType,
     });
 
-    const uploadUrl = await getSignedUrl(s3Client, uploadCommand, { expiresIn: 3600 });
-    const imageUrl = `https://${bucketName}.s3.${process.env.AWS_REGION || 'us-east-1'}.amazonaws.com/${imageKey}`;
+    try {
+      const uploadUrl = await getSignedUrl(s3Client, uploadCommand, { expiresIn: 3600 });
+      const imageUrl = `https://${bucketName}.s3.${process.env.AWS_REGION || 'us-east-1'}.amazonaws.com/${imageKey}`;
 
-    return {
-      statusCode: 200,
-      headers: corsHeaders,
-      body: JSON.stringify({ uploadUrl, imageUrl, imageKey }),
-    };
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({ uploadUrl, imageUrl, imageKey }),
+      };
+    } catch (error) {
+      console.error('Presigned URL generation failed', error);
+      return {
+        statusCode: 500,
+        headers: corsHeaders,
+        body: JSON.stringify({ message: 'Failed to generate presigned URL', error: error.message }),
+      };
+    }
   }
 
   if (path.endsWith('/profile/image-remove')) {

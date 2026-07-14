@@ -1,0 +1,38 @@
+{
+    "Changes": [
+        {
+            "Type": "Resource",
+            "ResourceChange": {
+                "Action": "Add",
+                "LogicalResourceId": "UserProfileImagesBucket",
+                "ResourceType": "AWS::S3::Bucket",
+                "Scope": [],
+                "Details": []
+            }
+        }
+    ],
+    "ChangeSetName": "test-minimal-001",
+    "ChangeSetId": "arn:aws:cloudformation:us-west-2:435998720983:changeSet/test-minimal-001/8c844d65-22b2-4905-abbb-c2972dcc2568",
+    "StackId": "arn:aws:cloudformation:us-west-2:435998720983:stack/test-minimal-bucket/0aa078a0-7fab-11f1-ae83-02b52acd1095",
+    "StackName": "test-minimal-bucket",
+    "Description": null,
+    "Parameters": null,
+    "CreationTime": "2026-07-14T17:40:02.025000+00:00",
+    "ExecutionStatus": "AVAILABLE",
+    "Status": "CREATE_COMPLETE",
+    "StatusReason": null,
+    "NotificationARNs": [],
+    "RollbackConfiguration": {},
+    "Capabilities": [
+        "CAPABILITY_IAM",
+        "CAPABILITY_AUTO_EXPAND"
+    ],
+    "Tags": null,
+    "ParentChangeSetId": null,
+    "IncludeNestedStacks": false,
+    "RootChangeSetId": null,
+    "OnStackFailure": null,
+    "ImportExistingResources": null,
+    "StackDriftStatus": null,
+    "DeploymentMode": null
+}

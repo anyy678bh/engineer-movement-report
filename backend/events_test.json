@@ -1,0 +1,15 @@
+{
+    "StackEvents": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:435998720983:stack/engineer-movement-report-test/7bcab400-7f4c-11f1-ad0a-120ccf9f5447",
+            "EventId": "7bca65e0-7f4c-11f1-ad0a-120ccf9f5447",
+            "StackName": "engineer-movement-report-test",
+            "LogicalResourceId": "engineer-movement-report-test",
+            "PhysicalResourceId": "arn:aws:cloudformation:us-east-1:435998720983:stack/engineer-movement-report-test/7bcab400-7f4c-11f1-ad0a-120ccf9f5447",
+            "ResourceType": "AWS::CloudFormation::Stack",
+            "Timestamp": "2026-07-14T06:23:09.696000+00:00",
+            "ResourceStatus": "REVIEW_IN_PROGRESS",
+            "ResourceStatusReason": "User Initiated"
+        }
+    ]
+}

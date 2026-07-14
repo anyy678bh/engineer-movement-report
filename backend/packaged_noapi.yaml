@@ -1,0 +1,157 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Engineer Movement Report backend (no API) - reduced for validation
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 30
+Resources:
+  ReportsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: engineer-movement-reports
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: pk
+        AttributeType: S
+      - AttributeName: sk
+        AttributeType: S
+      KeySchema:
+      - AttributeName: pk
+        KeyType: HASH
+      - AttributeName: sk
+        KeyType: RANGE
+    Metadata:
+      SamResourceId: ReportsTable
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: engineer-movement-report-users
+      AutoVerifiedAttributes:
+      - email
+      UsernameAttributes:
+      - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+          RequireUppercase: true
+    Metadata:
+      SamResourceId: UserPool
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: engineer-movement-report-client
+      UserPoolId:
+        Ref: UserPool
+      ExplicitAuthFlows:
+      - ALLOW_USER_PASSWORD_AUTH
+      - ALLOW_REFRESH_TOKEN_AUTH
+    Metadata:
+      SamResourceId: UserPoolClient
+  CreateReportFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://aws-sam-cli-managed-default-samclisourcebucket-vaj00qpavrhm/4354b707333b72f2af36d018356fd265
+      Handler: index.handler
+      Environment:
+        Variables:
+          REPORTS_TABLE:
+            Ref: ReportsTable
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: ReportsTable
+    Metadata:
+      SamResourceId: CreateReportFunction
+  UserProfilesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: engineer-user-profiles
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: userId
+        AttributeType: S
+      - AttributeName: tenantId
+        AttributeType: S
+      KeySchema:
+      - AttributeName: userId
+        KeyType: HASH
+      - AttributeName: tenantId
+        KeyType: RANGE
+    Metadata:
+      SamResourceId: UserProfilesTable
+  UserProfileImagesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      OwnershipControls:
+        Rules:
+        - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      CorsConfiguration:
+        CorsRules:
+        - AllowedHeaders:
+          - '*'
+          AllowedMethods:
+          - GET
+          - PUT
+          - POST
+          - HEAD
+          AllowedOrigins:
+          - http://127.0.0.1:8000
+          - http://localhost:8000
+          - http://localhost
+          - https://d369y0ycnp7jn3.amplifyapp.com
+          MaxAgeSeconds: 3000
+    Metadata:
+      SamResourceId: UserProfileImagesBucket
+  ProfileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://aws-sam-cli-managed-default-samclisourcebucket-vaj00qpavrhm/42a98f58b36c90dfc8c905d747566f0b
+      Handler: index.handler
+      Environment:
+        Variables:
+          USER_PROFILES_TABLE:
+            Ref: UserProfilesTable
+          PROFILE_IMAGES_BUCKET:
+            Ref: UserProfileImagesBucket
+          AWS_REGION:
+            Ref: AWS::Region
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UserProfilesTable
+      - S3CrudPolicy:
+          BucketName:
+            Ref: UserProfileImagesBucket
+    Metadata:
+      SamResourceId: ProfileFunction
+  ListReportsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://aws-sam-cli-managed-default-samclisourcebucket-vaj00qpavrhm/84c271eba64957108b7b970ab61077e3
+      Handler: index.handler
+      Environment:
+        Variables:
+          REPORTS_TABLE:
+            Ref: ReportsTable
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: ReportsTable
+    Metadata:
+      SamResourceId: ListReportsFunction
+Outputs:
+  UserPoolId:
+    Value:
+      Ref: UserPool
+  UserPoolClientId:
+    Value:
+      Ref: UserPoolClient

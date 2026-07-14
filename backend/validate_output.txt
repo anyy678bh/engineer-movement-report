@@ -1,0 +1,2 @@
+Engineer Movement Report backend using Lambda, API Gateway, DynamoDB, and Cognito
+CAPABILITIES	CAPABILITY_AUTO_EXPAND

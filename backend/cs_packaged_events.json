@@ -1,0 +1,69 @@
+{
+    "StackEvents": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:435998720983:stack/test-packaged-validation-001/cd002d30-7f53-11f1-ae77-129b37054889",
+            "EventId": "d22e9f80-7f53-11f1-8556-0affda5dd907",
+            "StackName": "test-packaged-validation-001",
+            "OperationId": "993aa4f8-cd1f-4c2f-9a7e-a6bbbb63bc08",
+            "LogicalResourceId": "test-packaged-validation-001",
+            "PhysicalResourceId": "arn:aws:cloudformation:us-east-1:435998720983:stack/test-packaged-validation-001/cd002d30-7f53-11f1-ae77-129b37054889",
+            "ResourceType": "AWS::CloudFormation::Stack",
+            "Timestamp": "2026-07-14T07:15:41.026000+00:00",
+            "ResourceStatus": "ROLLBACK_COMPLETE",
+            "ClientRequestToken": "0feba493-9fdd-41eb-be12-fe4514444253"
+        },
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:435998720983:stack/test-packaged-validation-001/cd002d30-7f53-11f1-ae77-129b37054889",
+            "EventId": "d1727b70-7f53-11f1-a234-0affcf7dfc53",
+            "StackName": "test-packaged-validation-001",
+            "OperationId": "993aa4f8-cd1f-4c2f-9a7e-a6bbbb63bc08",
+            "LogicalResourceId": "test-packaged-validation-001",
+            "PhysicalResourceId": "arn:aws:cloudformation:us-east-1:435998720983:stack/test-packaged-validation-001/cd002d30-7f53-11f1-ae77-129b37054889",
+            "ResourceType": "AWS::CloudFormation::Stack",
+            "Timestamp": "2026-07-14T07:15:39.768000+00:00",
+            "ResourceStatus": "ROLLBACK_IN_PROGRESS",
+            "ResourceStatusReason": "Validation failure detected. See the operation's FAILED event for details.",
+            "ClientRequestToken": "0feba493-9fdd-41eb-be12-fe4514444253"
+        },
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:435998720983:stack/test-packaged-validation-001/cd002d30-7f53-11f1-ae77-129b37054889",
+            "EventId": "test-packaged-validation-001-f6997209-9943-4a5b-9254-c079969007d3",
+            "StackName": "test-packaged-validation-001",
+            "OperationId": "cd0201f0-7f53-11f1-ae77-129b37054889",
+            "LogicalResourceId": "test-packaged-validation-001",
+            "PhysicalResourceId": "arn:aws:cloudformation:us-east-1:435998720983:stack/test-packaged-validation-001/cd002d30-7f53-11f1-ae77-129b37054889",
+            "ResourceType": "AWS::CloudFormation::Stack",
+            "Timestamp": "2026-07-14T07:15:39.546000+00:00",
+            "ResourceStatus": "CREATE_FAILED",
+            "ResourceStatusReason": "Validation failed with 2 error(s). Call DescribeEvents to retrieve the full list of issues with resource and property details, resolve each error, then retry the operation.",
+            "ClientRequestToken": "0feba493-9fdd-41eb-be12-fe4514444253",
+            "DetailedStatus": "VALIDATION_FAILED"
+        },
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:435998720983:stack/test-packaged-validation-001/cd002d30-7f53-11f1-ae77-129b37054889",
+            "EventId": "62558385-758d-4f57-9df5-a06870e954ba",
+            "StackName": "test-packaged-validation-001",
+            "OperationId": "cd0201f0-7f53-11f1-ae77-129b37054889",
+            "LogicalResourceId": "test-packaged-validation-001",
+            "PhysicalResourceId": "arn:aws:cloudformation:us-east-1:435998720983:stack/test-packaged-validation-001/cd002d30-7f53-11f1-ae77-129b37054889",
+            "ResourceType": "AWS::CloudFormation::Stack",
+            "Timestamp": "2026-07-14T07:15:35.388000+00:00",
+            "ResourceStatus": "CREATE_IN_PROGRESS",
+            "ResourceStatusReason": "Transformation succeeded",
+            "ClientRequestToken": "0feba493-9fdd-41eb-be12-fe4514444253"
+        },
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:435998720983:stack/test-packaged-validation-001/cd002d30-7f53-11f1-ae77-129b37054889",
+            "EventId": "cd0201f0-7f53-11f1-ae77-129b37054889",
+            "StackName": "test-packaged-validation-001",
+            "OperationId": "cd0201f0-7f53-11f1-ae77-129b37054889",
+            "LogicalResourceId": "test-packaged-validation-001",
+            "PhysicalResourceId": "arn:aws:cloudformation:us-east-1:435998720983:stack/test-packaged-validation-001/cd002d30-7f53-11f1-ae77-129b37054889",
+            "ResourceType": "AWS::CloudFormation::Stack",
+            "Timestamp": "2026-07-14T07:15:32.373000+00:00",
+            "ResourceStatus": "CREATE_IN_PROGRESS",
+            "ResourceStatusReason": "User Initiated",
+            "ClientRequestToken": "0feba493-9fdd-41eb-be12-fe4514444253"
+        }
+    ]
+}

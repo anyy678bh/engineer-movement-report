@@ -1,0 +1,124 @@
+{
+    "StackResourceSummaries": [
+        {
+            "LogicalResourceId": "CreateReportFunction",
+            "PhysicalResourceId": "engineer-movement-report-CreateReportFunction-g4ffRvEGU1OM",
+            "ResourceType": "AWS::Lambda::Function",
+            "LastUpdatedTimestamp": "2026-07-12T18:56:55.989000+00:00",
+            "ResourceStatus": "UPDATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "CreateReportFunctionCreateReportApiPermissionProd",
+            "PhysicalResourceId": "engineer-movement-report-CreateReportFunctionCreateReportApiPermissionProd-VkEQdw0REbaG",
+            "ResourceType": "AWS::Lambda::Permission",
+            "LastUpdatedTimestamp": "2026-07-11T07:42:32.705000+00:00",
+            "ResourceStatus": "UPDATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "CreateReportFunctionRole",
+            "PhysicalResourceId": "engineer-movement-report-CreateReportFunctionRole-fEqqrJRUsmuD",
+            "ResourceType": "AWS::IAM::Role",
+            "LastUpdatedTimestamp": "2026-07-11T00:06:40.743000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "ListReportsFunction",
+            "PhysicalResourceId": "engineer-movement-report-ListReportsFunction-0Fwp9gi8oq3j",
+            "ResourceType": "AWS::Lambda::Function",
+            "LastUpdatedTimestamp": "2026-07-12T18:56:55.885000+00:00",
+            "ResourceStatus": "UPDATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "ListReportsFunctionListReportsApiPermissionProd",
+            "PhysicalResourceId": "engineer-movement-report-ListReportsFunctionListReportsApiPermissionProd-K85Fi1eAP2Sr",
+            "ResourceType": "AWS::Lambda::Permission",
+            "LastUpdatedTimestamp": "2026-07-11T07:42:32.745000+00:00",
+            "ResourceStatus": "UPDATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "ListReportsFunctionRole",
+            "PhysicalResourceId": "engineer-movement-report-ListReportsFunctionRole-3voNUsyk6QxS",
+            "ResourceType": "AWS::IAM::Role",
+            "LastUpdatedTimestamp": "2026-07-11T00:06:40.521000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "ReportsApi",
+            "PhysicalResourceId": "2wq0fqrnof",
+            "ResourceType": "AWS::ApiGateway::RestApi",
+            "LastUpdatedTimestamp": "2026-07-11T07:42:30.259000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "ReportsApiDeployment49122dad01",
+            "PhysicalResourceId": "8heh2g",
+            "ResourceType": "AWS::ApiGateway::Deployment",
+            "LastUpdatedTimestamp": "2026-07-11T07:42:32.624000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "ReportsApiProdStage",
+            "PhysicalResourceId": "Prod",
+            "ResourceType": "AWS::ApiGateway::Stage",
+            "LastUpdatedTimestamp": "2026-07-11T07:42:35.939000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "ReportsTable",
+            "PhysicalResourceId": "engineer-movement-reports",
+            "ResourceType": "AWS::DynamoDB::Table",
+            "LastUpdatedTimestamp": "2026-07-11T00:06:22.883000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "UserPool",
+            "PhysicalResourceId": "us-east-1_2pWDuIWlJ",
+            "ResourceType": "AWS::Cognito::UserPool",
+            "LastUpdatedTimestamp": "2026-07-11T00:06:11.745000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "UserPoolClient",
+            "PhysicalResourceId": "72bm4lv1e4b53ouo11bmh9in2c",
+            "ResourceType": "AWS::Cognito::UserPoolClient",
+            "LastUpdatedTimestamp": "2026-07-11T00:06:13.908000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        }
+    ]
+}

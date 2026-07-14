@@ -13,7 +13,7 @@ Resources:
     Properties:
       StageName: Prod
       Cors:
-        AllowMethods: "'OPTIONS,GET,POST'"
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
         AllowOrigin: "'*'"
 
@@ -96,12 +96,14 @@ Resources:
   UserProfileImagesBucket:
     Type: AWS::S3::Bucket
     Properties:
-      AccessControl: PublicRead
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
       PublicAccessBlockConfiguration:
-        BlockPublicAcls: false
-        BlockPublicPolicy: false
-        IgnorePublicAcls: false
-        RestrictPublicBuckets: false
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
       CorsConfiguration:
         CorsRules:
           - AllowedHeaders:
@@ -112,11 +114,8 @@ Resources:
               - POST
               - HEAD
             AllowedOrigins:
-              - "http://127.0.0.1:8000"
               - "http://localhost:8000"
-              - "http://localhost"
               - "https://d369y0ycnp7jn3.amplifyapp.com"
-            MaxAgeSeconds: 3000
 
   ProfileFunction:
     Type: AWS::Serverless::Function
@@ -127,7 +126,6 @@ Resources:
         Variables:
           USER_PROFILES_TABLE: !Ref UserProfilesTable
           PROFILE_IMAGES_BUCKET: !Ref UserProfileImagesBucket
-          AWS_REGION: !Ref AWS::Region
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref UserProfilesTable

@@ -1,0 +1,4 @@
+{
+    "Location": "http://engineer-movement-report-deploy-uswest2-595defef.s3.amazonaws.com/",
+    "BucketArn": "arn:aws:s3:::engineer-movement-report-deploy-uswest2-595defef"
+}

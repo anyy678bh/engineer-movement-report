@@ -1,0 +1,597 @@
+2026-07-14 07:46:30,763 | Config file location: C:\Users\Admin\Downloads\engineer-movement-report\backend\samconfig.toml
+2026-07-14 07:46:30,764 | Loading configuration values from [default.['validate'].parameters] (env.command_name.section) in config file at 'C:\Users\Admin\Downloads\engineer-movement-report\backend\samconfig.toml'...
+2026-07-14 07:46:30,766 | Configuration values successfully loaded.
+2026-07-14 07:46:30,766 | Configuration values are: {}
+2026-07-14 07:46:30,893 | Using config file: samconfig.toml, config environment: default
+2026-07-14 07:46:30,894 | Expand command line arguments to:
+2026-07-14 07:46:30,895 | --template_file=C:\Users\Admin\Downloads\engineer-movement-report\backend\packaged_uswest2.yaml 
+2026-07-14 07:46:34,426 | Translated template is:
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Engineer Movement Report backend using Lambda, API Gateway, DynamoDB,
+  and Cognito
+Resources:
+  ReportsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: engineer-movement-reports
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: pk
+        AttributeType: S
+      - AttributeName: sk
+        AttributeType: S
+      KeySchema:
+      - AttributeName: pk
+        KeyType: HASH
+      - AttributeName: sk
+        KeyType: RANGE
+    Metadata:
+      SamResourceId: ReportsTable
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: engineer-movement-report-users
+      AutoVerifiedAttributes:
+      - email
+      UsernameAttributes:
+      - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+          RequireUppercase: true
+    Metadata:
+      SamResourceId: UserPool
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: engineer-movement-report-client
+      UserPoolId:
+        Ref: UserPool
+      ExplicitAuthFlows:
+      - ALLOW_USER_PASSWORD_AUTH
+      - ALLOW_REFRESH_TOKEN_AUTH
+    Metadata:
+      SamResourceId: UserPoolClient
+  UserProfilesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: engineer-user-profiles
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+      - AttributeName: userId
+        AttributeType: S
+      - AttributeName: tenantId
+        AttributeType: S
+      KeySchema:
+      - AttributeName: userId
+        KeyType: HASH
+      - AttributeName: tenantId
+        KeyType: RANGE
+    Metadata:
+      SamResourceId: UserProfilesTable
+  UserProfileImagesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      OwnershipControls:
+        Rules:
+        - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      CorsConfiguration:
+        CorsRules:
+        - AllowedHeaders:
+          - '*'
+          AllowedMethods:
+          - GET
+          - PUT
+          - POST
+          - HEAD
+          AllowedOrigins:
+          - http://127.0.0.1:8000
+          - http://localhost:8000
+          - http://localhost
+          - https://d369y0ycnp7jn3.amplifyapp.com
+          MaxAgeSeconds: 3000
+    Metadata:
+      SamResourceId: UserProfileImagesBucket
+  CreateReportFunction:
+    Metadata:
+      SamResourceId: CreateReportFunction
+    Properties:
+      Code:
+        S3Bucket: engineer-movement-report-deploy-uswest2-595defef
+        S3Key: 4354b707333b72f2af36d018356fd265
+      Environment:
+        Variables:
+          REPORTS_TABLE:
+            Ref: ReportsTable
+      Handler: index.handler
+      Role:
+        Fn::GetAtt:
+        - CreateReportFunctionRole
+        - Arn
+      Runtime: nodejs20.x
+      Tags:
+      - Key: lambda:createdBy
+        Value: SAM
+      Timeout: 30
+    Type: AWS::Lambda::Function
+  CreateReportFunctionRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:GetItem
+            - dynamodb:DeleteItem
+            - dynamodb:PutItem
+            - dynamodb:Scan
+            - dynamodb:Query
+            - dynamodb:UpdateItem
+            - dynamodb:BatchWriteItem
+            - dynamodb:BatchGetItem
+            - dynamodb:DescribeTable
+            - dynamodb:ConditionCheckItem
+            Effect: Allow
+            Resource:
+            - Fn::Sub:
+              - arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tableName}
+              - tableName:
+                  Ref: ReportsTable
+            - Fn::Sub:
+              - arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tableName}/index/*
+              - tableName:
+                  Ref: ReportsTable
+        PolicyName: CreateReportFunctionRolePolicy0
+      Tags:
+      - Key: lambda:createdBy
+        Value: SAM
+    Type: AWS::IAM::Role
+  CreateReportFunctionCreateReportApiPermissionProd:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: CreateReportFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub:
+        - arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/POST/reports
+        - __ApiId__:
+            Ref: ReportsApi
+          __Stage__: '*'
+    Type: AWS::Lambda::Permission
+  ProfileFunction:
+    Metadata:
+      SamResourceId: ProfileFunction
+    Properties:
+      Code:
+        S3Bucket: engineer-movement-report-deploy-uswest2-595defef
+        S3Key: e6e696ed4c076b878fb0165f7b3c8e60
+      Environment:
+        Variables:
+          USER_PROFILES_TABLE:
+            Ref: UserProfilesTable
+          PROFILE_IMAGES_BUCKET:
+            Ref: UserProfileImagesBucket
+          AWS_REGION:
+            Ref: AWS::Region
+      Handler: index.handler
+      Role:
+        Fn::GetAtt:
+        - ProfileFunctionRole
+        - Arn
+      Runtime: nodejs20.x
+      Tags:
+      - Key: lambda:createdBy
+        Value: SAM
+      Timeout: 30
+    Type: AWS::Lambda::Function
+  ProfileFunctionRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:GetItem
+            - dynamodb:DeleteItem
+            - dynamodb:PutItem
+            - dynamodb:Scan
+            - dynamodb:Query
+            - dynamodb:UpdateItem
+            - dynamodb:BatchWriteItem
+            - dynamodb:BatchGetItem
+            - dynamodb:DescribeTable
+            - dynamodb:ConditionCheckItem
+            Effect: Allow
+            Resource:
+            - Fn::Sub:
+              - arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tableName}
+              - tableName:
+                  Ref: UserProfilesTable
+            - Fn::Sub:
+              - arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tableName}/index/*
+              - tableName:
+                  Ref: UserProfilesTable
+        PolicyName: ProfileFunctionRolePolicy0
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - s3:GetObject
+            - s3:ListBucket
+            - s3:GetBucketLocation
+            - s3:GetObjectVersion
+            - s3:PutObject
+            - s3:PutObjectAcl
+            - s3:GetLifecycleConfiguration
+            - s3:PutLifecycleConfiguration
+            - s3:DeleteObject
+            Effect: Allow
+            Resource:
+            - Fn::Sub:
+              - arn:${AWS::Partition}:s3:::${bucketName}
+              - bucketName:
+                  Ref: UserProfileImagesBucket
+            - Fn::Sub:
+              - arn:${AWS::Partition}:s3:::${bucketName}/*
+              - bucketName:
+                  Ref: UserProfileImagesBucket
+        PolicyName: ProfileFunctionRolePolicy1
+      Tags:
+      - Key: lambda:createdBy
+        Value: SAM
+    Type: AWS::IAM::Role
+  ProfileFunctionProfileApiPermissionProd:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: ProfileFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub:
+        - arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/*/profile
+        - __ApiId__:
+            Ref: ReportsApi
+          __Stage__: '*'
+    Type: AWS::Lambda::Permission
+  ProfileFunctionProfileImageRemoveApiPermissionProd:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: ProfileFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub:
+        - arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/*/profile/image-remove
+        - __ApiId__:
+            Ref: ReportsApi
+          __Stage__: '*'
+    Type: AWS::Lambda::Permission
+  ProfileFunctionProfileImageUploadApiPermissionProd:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: ProfileFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub:
+        - arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/*/profile/image-upload
+        - __ApiId__:
+            Ref: ReportsApi
+          __Stage__: '*'
+    Type: AWS::Lambda::Permission
+  ListReportsFunction:
+    Metadata:
+      SamResourceId: ListReportsFunction
+    Properties:
+      Code:
+        S3Bucket: engineer-movement-report-deploy-uswest2-595defef
+        S3Key: 84c271eba64957108b7b970ab61077e3
+      Environment:
+        Variables:
+          REPORTS_TABLE:
+            Ref: ReportsTable
+      Handler: index.handler
+      Role:
+        Fn::GetAtt:
+        - ListReportsFunctionRole
+        - Arn
+      Runtime: nodejs20.x
+      Tags:
+      - Key: lambda:createdBy
+        Value: SAM
+      Timeout: 30
+    Type: AWS::Lambda::Function
+  ListReportsFunctionRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:GetItem
+            - dynamodb:DeleteItem
+            - dynamodb:PutItem
+            - dynamodb:Scan
+            - dynamodb:Query
+            - dynamodb:UpdateItem
+            - dynamodb:BatchWriteItem
+            - dynamodb:BatchGetItem
+            - dynamodb:DescribeTable
+            - dynamodb:ConditionCheckItem
+            Effect: Allow
+            Resource:
+            - Fn::Sub:
+              - arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tableName}
+              - tableName:
+                  Ref: ReportsTable
+            - Fn::Sub:
+              - arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tableName}/index/*
+              - tableName:
+                  Ref: ReportsTable
+        PolicyName: ListReportsFunctionRolePolicy0
+      Tags:
+      - Key: lambda:createdBy
+        Value: SAM
+    Type: AWS::IAM::Role
+  ListReportsFunctionListReportsApiPermissionProd:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: ListReportsFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub:
+        - arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/GET/reports
+        - __ApiId__:
+            Ref: ReportsApi
+          __Stage__: '*'
+    Type: AWS::Lambda::Permission
+  ReportsApi:
+    Metadata:
+      SamResourceId: ReportsApi
+    Properties:
+      Body:
+        info:
+          version: '1.0'
+          title:
+            Ref: AWS::StackName
+        paths:
+          /reports:
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateReportFunction.Arn}/invocations
+              responses: {}
+            options:
+              x-amazon-apigateway-integration:
+                type: mock
+                requestTemplates:
+                  application/json: "{\n  \"statusCode\" : 200\n}\n"
+                responses:
+                  default:
+                    statusCode: '200'
+                    responseTemplates:
+                      application/json: '{}
+
+                        '
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '*'
+                      method.response.header.Access-Control-Allow-Methods: OPTIONS,GET,POST
+                      method.response.header.Access-Control-Allow-Headers: Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token
+              consumes:
+              - application/json
+              summary: CORS support
+              responses:
+                '200':
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                  description: Default response for CORS method
+              produces:
+              - application/json
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ListReportsFunction.Arn}/invocations
+              responses: {}
+          /profile:
+            options:
+              x-amazon-apigateway-integration:
+                type: mock
+                requestTemplates:
+                  application/json: "{\n  \"statusCode\" : 200\n}\n"
+                responses:
+                  default:
+                    statusCode: '200'
+                    responseTemplates:
+                      application/json: '{}
+
+                        '
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '*'
+                      method.response.header.Access-Control-Allow-Methods: OPTIONS,GET,POST
+                      method.response.header.Access-Control-Allow-Headers: Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token
+              consumes:
+              - application/json
+              summary: CORS support
+              responses:
+                '200':
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                  description: Default response for CORS method
+              produces:
+              - application/json
+            x-amazon-apigateway-any-method:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
+              responses: {}
+          /profile/image-upload:
+            options:
+              x-amazon-apigateway-integration:
+                type: mock
+                requestTemplates:
+                  application/json: "{\n  \"statusCode\" : 200\n}\n"
+                responses:
+                  default:
+                    statusCode: '200'
+                    responseTemplates:
+                      application/json: '{}
+
+                        '
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '*'
+                      method.response.header.Access-Control-Allow-Methods: OPTIONS,GET,POST
+                      method.response.header.Access-Control-Allow-Headers: Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token
+              consumes:
+              - application/json
+              summary: CORS support
+              responses:
+                '200':
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                  description: Default response for CORS method
+              produces:
+              - application/json
+            x-amazon-apigateway-any-method:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
+              responses: {}
+          /profile/image-remove:
+            options:
+              x-amazon-apigateway-integration:
+                type: mock
+                requestTemplates:
+                  application/json: "{\n  \"statusCode\" : 200\n}\n"
+                responses:
+                  default:
+                    statusCode: '200'
+                    responseTemplates:
+                      application/json: '{}
+
+                        '
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Origin: '*'
+                      method.response.header.Access-Control-Allow-Methods: OPTIONS,GET,POST
+                      method.response.header.Access-Control-Allow-Headers: Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token
+              consumes:
+              - application/json
+              summary: CORS support
+              responses:
+                '200':
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                    Access-Control-Allow-Headers:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                  description: Default response for CORS method
+              produces:
+              - application/json
+            x-amazon-apigateway-any-method:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
+              responses: {}
+        swagger: '2.0'
+    Type: AWS::ApiGateway::RestApi
+  ReportsApiDeployment6b3b923d0d:
+    Properties:
+      Description: 'RestApi deployment id: 6b3b923d0d2be924dd789b693730049626ba6728'
+      RestApiId:
+        Ref: ReportsApi
+      StageName: Stage
+    Type: AWS::ApiGateway::Deployment
+  ReportsApiProdStage:
+    Properties:
+      DeploymentId:
+        Ref: ReportsApiDeployment6b3b923d0d
+      RestApiId:
+        Ref: ReportsApi
+      StageName: Prod
+    Type: AWS::ApiGateway::Stage
+Outputs:
+  UserPoolId:
+    Value:
+      Ref: UserPool
+  UserPoolClientId:
+    Value:
+      Ref: UserPoolClient
+  ApiEndpoint:
+    Value:
+      Fn::Sub: https://${ReportsApi}.execute-api.${AWS::Region}.amazonaws.com/Prod
+
+C:\Users\Admin\Downloads\engineer-movement-report\backend\packaged_uswest2.yaml is a valid SAM Template. This is according to basic SAM Validation, for additional validation, please run with "--lint" option
+2026-07-14 07:46:34,920 | Telemetry endpoint configured to be https://aws-serverless-tools-telemetry.us-west-2.amazonaws.com/metrics
+2026-07-14 07:46:37,318 | No container socket path in global storage, falling back to DOCKER_HOST detection: 
+2026-07-14 07:46:37,341 | Telemetry endpoint configured to be https://aws-serverless-tools-telemetry.us-west-2.amazonaws.com/metrics
+2026-07-14 07:46:37,341 | Unable to find Click Context for getting session_id.
+2026-07-14 07:46:37,341 | Sending Telemetry: {'metrics': [{'commandRun': {'requestId': 'f950bcfa-5819-40f9-97e5-df49aa6ead19', 'installationId': 'ae9c8980-96cc-46b3-8482-545b3bc2ce9a', 'sessionId': 'aafa50da-f53b-46ab-a96c-dd8414a880c3', 'executionEnvironment': 'CLI', 'ci': False, 'pyversion': '3.14.3', 'samcliVersion': '1.163.0', 'osPlatform': 'Windows', 'awsProfileProvided': False, 'debugFlagProvided': True, 'region': 'us-west-2', 'commandName': 'sam validate', 'metricSpecificAttributes': {'projectType': 'CFN', 'gitOrigin': '0eef1fbe49fd57ea75b837e1212ea4da79e63885b7830d05ee85795a003e7443', 'projectName': '9d972132b2dfa387b6891ac1c5afdb8a13f1f2ba1120446ac73035a07cd16f12', 'initialCommit': 'e70cd9b1e8a5030f11d29dc99c3b91faa835a85326e0c7b460a348dd98627bfc', 'containerEngine': 'docker-default', 'adminContainerPreference': None}, 'duration': 4026, 'exitReason': 'success', 'exitCode': 0}}]}
+2026-07-14 07:46:37,344 | No container socket path in global storage, falling back to DOCKER_HOST detection: 
+2026-07-14 07:46:37,344 | Sending Telemetry: {'metrics': [{'events': {'requestId': '9dac3f7f-0853-4d28-a916-116186b98ddb', 'installationId': 'ae9c8980-96cc-46b3-8482-545b3bc2ce9a', 'sessionId': 'aafa50da-f53b-46ab-a96c-dd8414a880c3', 'executionEnvironment': 'CLI', 'ci': False, 'pyversion': '3.14.3', 'samcliVersion': '1.163.0', 'osPlatform': 'Windows', 'commandName': 'sam validate', 'metricSpecificAttributes': {'events': [{'event_name': 'SamConfigFileExtension', 'event_value': '.toml', 'thread_id': '1e5a32233ecc4ecc9da73a9f7d13e922', 'time_stamp': '2026-07-14 06:46:30.763514+00', 'exception_name': None}, {'event_name': 'SamConfigFileExtension', 'event_value': '.toml', 'thread_id': 'f63ddf3879d94f74a7a226a8f11f8950', 'time_stamp': '2026-07-14 06:46:30.893435+00', 'exception_name': None}], 'containerEngine': 'docker-default'}}}]}
+2026-07-14 07:46:43,501 | HTTPSConnectionPool(host='aws-serverless-tools-telemetry.us-west-2.amazonaws.com', port=443): Read timed out. (read timeout=0.1)
+2026-07-14 07:46:43,634 | HTTPSConnectionPool(host='aws-serverless-tools-telemetry.us-west-2.amazonaws.com', port=443): Read timed out. (read timeout=0.1)

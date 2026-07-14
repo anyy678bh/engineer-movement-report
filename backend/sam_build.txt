@@ -1,0 +1,146 @@
+2026-07-14 06:53:16,619 | Config file location: C:\Users\Admin\Downloads\engineer-movement-report\backend\samconfig.toml
+2026-07-14 06:53:16,620 | Loading configuration values from [default.['build'].parameters] (env.command_name.section) in config file at 'C:\Users\Admin\Downloads\engineer-movement-report\backend\samconfig.toml'...
+2026-07-14 06:53:16,621 | Configuration values successfully loaded.
+2026-07-14 06:53:16,621 | Configuration values are: {}
+2026-07-14 06:53:16,698 | Using SAM Template at C:\Users\Admin\Downloads\engineer-movement-report\backend\template.yaml
+2026-07-14 06:53:16,707 | Empty parameter set ({})
+2026-07-14 06:53:16,851 | Using config file: samconfig.toml, config environment: default
+2026-07-14 06:53:16,852 | Expand command line arguments to:
+2026-07-14 06:53:16,852 | --template_file=C:\Users\Admin\Downloads\engineer-movement-report\backend\template.yaml --mount_with=READ --build_dir=.aws-sam\build --cache_dir=.aws-sam\cache 
+2026-07-14 06:53:17,804 | 'build' command is called
+2026-07-14 06:53:17,875 | No Parameters detected in the template
+2026-07-14 06:53:18,055 | There is no customer defined id or cdk path defined for resource ReportsApi, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,055 | There is no customer defined id or cdk path defined for resource ReportsTable, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,055 | There is no customer defined id or cdk path defined for resource UserPool, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,055 | There is no customer defined id or cdk path defined for resource UserPoolClient, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,056 | There is no customer defined id or cdk path defined for resource CreateReportFunction, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,056 | There is no customer defined id or cdk path defined for resource UserProfilesTable, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,056 | There is no customer defined id or cdk path defined for resource UserProfileImagesBucket, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,056 | There is no customer defined id or cdk path defined for resource ProfileFunction, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,056 | There is no customer defined id or cdk path defined for resource ListReportsFunction, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,067 | 0 stacks found in the template
+2026-07-14 06:53:18,068 | No Parameters detected in the template
+2026-07-14 06:53:18,218 | There is no customer defined id or cdk path defined for resource ReportsApi, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,219 | There is no customer defined id or cdk path defined for resource ReportsTable, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,219 | There is no customer defined id or cdk path defined for resource UserPool, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,219 | There is no customer defined id or cdk path defined for resource UserPoolClient, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,219 | There is no customer defined id or cdk path defined for resource CreateReportFunction, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,220 | There is no customer defined id or cdk path defined for resource UserProfilesTable, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,220 | There is no customer defined id or cdk path defined for resource UserProfileImagesBucket, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,220 | There is no customer defined id or cdk path defined for resource ProfileFunction, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,220 | There is no customer defined id or cdk path defined for resource ListReportsFunction, so we will use the resource logical id as the resource id
+2026-07-14 06:53:18,234 | 9 resources found in the stack 
+2026-07-14 06:53:18,234 | Found Serverless function with name='CreateReportFunction' and CodeUri='lambda/createReport/'
+2026-07-14 06:53:18,235 | --base-dir is not presented, adjusting uri lambda/createReport/ relative to C:\Users\Admin\Downloads\engineer-movement-report\backend\template.yaml
+2026-07-14 06:53:18,235 | Found Serverless function with name='ProfileFunction' and CodeUri='profile-lambda/'
+2026-07-14 06:53:18,236 | --base-dir is not presented, adjusting uri profile-lambda/ relative to C:\Users\Admin\Downloads\engineer-movement-report\backend\template.yaml
+2026-07-14 06:53:18,236 | Found Serverless function with name='ListReportsFunction' and CodeUri='lambda/listReports/'
+2026-07-14 06:53:18,236 | --base-dir is not presented, adjusting uri lambda/listReports/ relative to C:\Users\Admin\Downloads\engineer-movement-report\backend\template.yaml
+2026-07-14 06:53:25,071 | 9 resources found in the stack 
+2026-07-14 06:53:25,071 | Found Serverless function with name='CreateReportFunction' and CodeUri='lambda/createReport/'
+2026-07-14 06:53:25,072 | Found Serverless function with name='ProfileFunction' and CodeUri='profile-lambda/'
+2026-07-14 06:53:25,072 | Found Serverless function with name='ListReportsFunction' and CodeUri='lambda/listReports/'
+2026-07-14 06:53:25,074 | Instantiating build definitions
+2026-07-14 06:53:25,106 | Same function build definition found, adding function (Previous: BuildDefinition(nodejs20.x, C:\Users\Admin\Downloads\engineer-movement-report\backend\lambda\createReport, Zip, , 59b5ae37-a619-45d9-aa9c-cc8c4ac03a87, {}, {}, x86_64, []), Current: BuildDefinition(nodejs20.x, C:\Users\Admin\Downloads\engineer-movement-report\backend\lambda\createReport, Zip, , 91adb6f2-0706-4514-a5be-8320cce293c1, {}, {}, x86_64, []), Function: Function({'function_id': 'CreateReportFunction', 'name': 'CreateReportFunction', 'functionname': 'CreateReportFunction', 'runtime': 'nodejs20.x', 'memory': None, 'timeout': 30, 'handler': 'index.handler', 'imageuri': None, 'packagetype': 'Zip', 'imageconfig': None, 'codeuri': 'C:\\Users\\Admin\\Downloads\\engineer-movement-report\\backend\\lambda\\createReport', 'environment': {'Variables': {'REPORTS_TABLE': 'ReportsTable'}}, 'rolearn': None, 'layers': [], 'events': {'CreateReportApi': {'Type': 'Api', 'Properties': {'RestApiId': 'ReportsApi', 'Path': '/reports', 'Method': 'post'}}}, 'metadata': {'SamResourceId': 'CreateReportFunction'}, 'inlinecode': None, 'codesign_config_arn': None, 'architectures': None, 'function_url_config': None, 'function_build_info': <FunctionBuildInfo.BuildableZip: ('BuildableZip', 'Regular ZIP function which can be build with SAM CLI')>, 'stack_path': '', 'runtime_management_config': None, 'logging_config': None, 'tenancy_config': None, 'durable_config': None, 'capacity_provider_config': None, 'publish_to_latest_published': None}))
+2026-07-14 06:53:25,106 | Same function build definition found, adding function (Previous: BuildDefinition(nodejs20.x, C:\Users\Admin\Downloads\engineer-movement-report\backend\profile-lambda, Zip, , de1aad3b-251a-4c2b-842b-7412294f38a4, {}, {}, x86_64, []), Current: BuildDefinition(nodejs20.x, C:\Users\Admin\Downloads\engineer-movement-report\backend\profile-lambda, Zip, , ad77118a-c915-4ee6-a225-10c806783ecd, {}, {}, x86_64, []), Function: Function({'function_id': 'ProfileFunction', 'name': 'ProfileFunction', 'functionname': 'ProfileFunction', 'runtime': 'nodejs20.x', 'memory': None, 'timeout': 30, 'handler': 'index.handler', 'imageuri': None, 'packagetype': 'Zip', 'imageconfig': None, 'codeuri': 'C:\\Users\\Admin\\Downloads\\engineer-movement-report\\backend\\profile-lambda', 'environment': {'Variables': {'USER_PROFILES_TABLE': 'UserProfilesTable', 'PROFILE_IMAGES_BUCKET': 'UserProfileImagesBucket', 'AWS_REGION': 'us-east-1'}}, 'rolearn': None, 'layers': [], 'events': {'ProfileApi': {'Type': 'Api', 'Properties': {'RestApiId': 'ReportsApi', 'Path': '/profile', 'Method': 'any'}}, 'ProfileImageUploadApi': {'Type': 'Api', 'Properties': {'RestApiId': 'ReportsApi', 'Path': '/profile/image-upload', 'Method': 'any'}}, 'ProfileImageRemoveApi': {'Type': 'Api', 'Properties': {'RestApiId': 'ReportsApi', 'Path': '/profile/image-remove', 'Method': 'any'}}}, 'metadata': {'SamResourceId': 'ProfileFunction'}, 'inlinecode': None, 'codesign_config_arn': None, 'architectures': None, 'function_url_config': None, 'function_build_info': <FunctionBuildInfo.BuildableZip: ('BuildableZip', 'Regular ZIP function which can be build with SAM CLI')>, 'stack_path': '', 'runtime_management_config': None, 'logging_config': None, 'tenancy_config': None, 'durable_config': None, 'capacity_provider_config': None, 'publish_to_latest_published': None}))
+2026-07-14 06:53:25,107 | Same function build definition found, adding function (Previous: BuildDefinition(nodejs20.x, C:\Users\Admin\Downloads\engineer-movement-report\backend\lambda\listReports, Zip, , 67f6e46d-dff8-4f79-b939-efd797bcf7c0, {}, {}, x86_64, []), Current: BuildDefinition(nodejs20.x, C:\Users\Admin\Downloads\engineer-movement-report\backend\lambda\listReports, Zip, , 7c298018-345a-4057-9776-55c0ab519702, {}, {}, x86_64, []), Function: Function({'function_id': 'ListReportsFunction', 'name': 'ListReportsFunction', 'functionname': 'ListReportsFunction', 'runtime': 'nodejs20.x', 'memory': None, 'timeout': 30, 'handler': 'index.handler', 'imageuri': None, 'packagetype': 'Zip', 'imageconfig': None, 'codeuri': 'C:\\Users\\Admin\\Downloads\\engineer-movement-report\\backend\\lambda\\listReports', 'environment': {'Variables': {'REPORTS_TABLE': 'ReportsTable'}}, 'rolearn': None, 'layers': [], 'events': {'ListReportsApi': {'Type': 'Api', 'Properties': {'RestApiId': 'ReportsApi', 'Path': '/reports', 'Method': 'get'}}}, 'metadata': {'SamResourceId': 'ListReportsFunction'}, 'inlinecode': None, 'codesign_config_arn': None, 'architectures': None, 'function_url_config': None, 'function_build_info': <FunctionBuildInfo.BuildableZip: ('BuildableZip', 'Regular ZIP function which can be build with SAM CLI')>, 'stack_path': '', 'runtime_management_config': None, 'logging_config': None, 'tenancy_config': None, 'durable_config': None, 'capacity_provider_config': None, 'publish_to_latest_published': None}))
+2026-07-14 06:53:25,128 | Building codeuri: C:\Users\Admin\Downloads\engineer-movement-report\backend\profile-lambda runtime: nodejs20.x architecture: x86_64 functions: ProfileFunction
+2026-07-14 06:53:25,128 | Building to following folder C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\ProfileFunction
+2026-07-14 06:53:25,138 | Loading workflow module 'aws_lambda_builders.workflows'
+2026-07-14 06:53:25,183 | Registering workflow 'CustomMakeBuilder' with capability 'Capability(language='provided', dependency_manager=None, application_framework=None)'
+2026-07-14 06:53:25,213 | Registering workflow 'DotnetCliPackageBuilder' with capability 'Capability(language='dotnet', dependency_manager='cli-package', application_framework=None)'
+2026-07-14 06:53:25,240 | Registering workflow 'GoModulesBuilder' with capability 'Capability(language='go', dependency_manager='modules', application_framework=None)'
+2026-07-14 06:53:25,286 | Registering workflow 'JavaGradleWorkflow' with capability 'Capability(language='java', dependency_manager='gradle', application_framework=None)'
+2026-07-14 06:53:25,314 | Registering workflow 'JavaMavenWorkflow' with capability 'Capability(language='java', dependency_manager='maven', application_framework=None)'
+2026-07-14 06:53:25,340 | Registering workflow 'NodejsNpmBuilder' with capability 'Capability(language='nodejs', dependency_manager='npm', application_framework=None)'
+2026-07-14 06:53:25,367 | Registering workflow 'NodejsNpmEsbuildBuilder' with capability 'Capability(language='nodejs', dependency_manager='npm-esbuild', application_framework=None)'
+2026-07-14 06:53:25,411 | Registering workflow 'PythonPipBuilder' with capability 'Capability(language='python', dependency_manager='pip', application_framework=None)'
+2026-07-14 06:53:25,440 | Registering workflow 'PythonUvBuilder' with capability 'Capability(language='python', dependency_manager='uv', application_framework=None)'
+2026-07-14 06:53:25,463 | Registering workflow 'RubyBundlerBuilder' with capability 'Capability(language='ruby', dependency_manager='bundler', application_framework=None)'
+2026-07-14 06:53:25,495 | Registering workflow 'RustCargoLambdaBuilder' with capability 'Capability(language='rust', dependency_manager='cargo', application_framework=None)'
+2026-07-14 06:53:25,496 | Found workflow 'NodejsNpmBuilder' to support capabilities 'Capability(language='nodejs', dependency_manager='npm', application_framework=None)'
+2026-07-14 06:53:25,497 | npm installation actions install only production dependencies. Dev dependencies are omitted from the Lambda artifacts package
+2026-07-14 06:53:25,577 | Running workflow 'NodejsNpmBuilder'
+2026-07-14 06:53:25,578 |  Running NodejsNpmBuilder:NpmPack
+2026-07-14 06:53:25,578 | NODEJS packaging file:C:\Users\Admin\Downloads\engineer-movement-report\backend\profile-lambda to C:\Users\Admin\AppData\Local\Temp\tmp98olc564
+2026-07-14 06:53:25,578 | executing NPM: ['npm.cmd', 'pack', '-q', 'file:C:\\Users\\Admin\\Downloads\\engineer-movement-report\\backend\\profile-lambda']
+2026-07-14 06:53:31,783 | NODEJS packed to engineer-movement-report-profile-lambda-1.0.0.tgz
+2026-07-14 06:53:31,783 | NODEJS extracting to C:\Users\Admin\AppData\Local\Temp\tmp98olc564\unpacked
+2026-07-14 06:53:31,836 | NodejsNpmBuilder:NpmPack succeeded
+2026-07-14 06:53:31,836 |  Running NodejsNpmBuilder:CopyNpmrcAndLockfile
+2026-07-14 06:53:31,837 | NodejsNpmBuilder:CopyNpmrcAndLockfile succeeded
+2026-07-14 06:53:31,837 |  Running NodejsNpmBuilder:CopySource
+2026-07-14 06:53:31,837 | Creating target folders at C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\ProfileFunction
+2026-07-14 06:53:31,839 | Copying directory metadata from source (C:\Users\Admin\AppData\Local\Temp\tmp98olc564\unpacked\package) to destination (C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\ProfileFunction)
+2026-07-14 06:53:31,842 | Copying source file (C:\Users\Admin\AppData\Local\Temp\tmp98olc564\unpacked\package\index.mjs) to destination (C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\ProfileFunction\index.mjs)
+2026-07-14 06:53:31,853 | Copying source file (C:\Users\Admin\AppData\Local\Temp\tmp98olc564\unpacked\package\package.json) to destination (C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\ProfileFunction\package.json)
+2026-07-14 06:53:31,859 | NodejsNpmBuilder:CopySource succeeded
+2026-07-14 06:53:31,859 |  Running NodejsNpmBuilder:NpmInstall
+2026-07-14 06:53:31,859 | NODEJS installing production dependencies in: C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\ProfileFunction
+2026-07-14 06:53:31,860 | executing NPM: ['npm.cmd', 'install', '-q', '--no-audit', '--no-save', '--unsafe-perm', '--omit=dev']
+2026-07-14 06:54:21,276 | NodejsNpmBuilder:NpmInstall succeeded
+2026-07-14 06:54:21,276 |  Running NodejsNpmBuilder:NpmTest
+2026-07-14 06:54:21,277 | NODEJS skipping tests
+2026-07-14 06:54:21,277 | Add env variable 'SAM_NPM_RUN_TEST_WITH_BUILD=true' to run tests with build
+2026-07-14 06:54:21,277 | NodejsNpmBuilder:NpmTest succeeded
+2026-07-14 06:54:21,277 |  Running NodejsNpmBuilder:CleanUpNpmrc
+2026-07-14 06:54:21,277 | NodejsNpmBuilder:CleanUpNpmrc succeeded
+2026-07-14 06:54:21,278 |  Running NodejsNpmBuilder:LockfileCleanUp
+2026-07-14 06:54:21,278 | .package-lock cleanup in: C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\ProfileFunction
+2026-07-14 06:54:21,280 | NodejsNpmBuilder:LockfileCleanUp succeeded
+2026-07-14 06:54:21,285 | Building codeuri: C:\Users\Admin\Downloads\engineer-movement-report\backend\lambda\createReport runtime: nodejs20.x architecture: x86_64 functions: CreateReportFunction
+2026-07-14 06:54:21,286 | Building to following folder C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\CreateReportFunction
+2026-07-14 06:54:21,289 | Loading workflow module 'aws_lambda_builders.workflows'
+2026-07-14 06:54:21,289 | Found workflow 'NodejsNpmBuilder' to support capabilities 'Capability(language='nodejs', dependency_manager='npm', application_framework=None)'
+2026-07-14 06:54:21,291 | package.json file not found. Continuing the build without dependencies.
+2026-07-14 06:54:21,384 | Running workflow 'NodejsNpmBuilder'
+2026-07-14 06:54:21,385 |  Running NodejsNpmBuilder:CopySource
+2026-07-14 06:54:21,385 | Creating target folders at C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\CreateReportFunction
+2026-07-14 06:54:21,387 | Copying directory metadata from source (C:\Users\Admin\Downloads\engineer-movement-report\backend\lambda\createReport) to destination (C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\CreateReportFunction)
+2026-07-14 06:54:21,389 | Copying source file (C:\Users\Admin\Downloads\engineer-movement-report\backend\lambda\createReport\index.mjs) to destination (C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\CreateReportFunction\index.mjs)
+2026-07-14 06:54:21,392 | NodejsNpmBuilder:CopySource succeeded
+2026-07-14 06:54:21,393 | Building codeuri: C:\Users\Admin\Downloads\engineer-movement-report\backend\lambda\listReports runtime: nodejs20.x architecture: x86_64 functions: ListReportsFunction
+2026-07-14 06:54:21,394 | Building to following folder C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\ListReportsFunction
+2026-07-14 06:54:21,399 | Loading workflow module 'aws_lambda_builders.workflows'
+2026-07-14 06:54:21,399 | Found workflow 'NodejsNpmBuilder' to support capabilities 'Capability(language='nodejs', dependency_manager='npm', application_framework=None)'
+2026-07-14 06:54:21,400 | package.json file not found. Continuing the build without dependencies.
+2026-07-14 06:54:21,485 | Running workflow 'NodejsNpmBuilder'
+2026-07-14 06:54:21,486 |  Running NodejsNpmBuilder:CopySource
+2026-07-14 06:54:21,486 | Creating target folders at C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\ListReportsFunction
+2026-07-14 06:54:21,489 | Copying directory metadata from source (C:\Users\Admin\Downloads\engineer-movement-report\backend\lambda\listReports) to destination (C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\ListReportsFunction)
+2026-07-14 06:54:21,494 | Copying source file (C:\Users\Admin\Downloads\engineer-movement-report\backend\lambda\listReports\index.mjs) to destination (C:\Users\Admin\Downloads\engineer-movement-report\backend\.aws-sam\build\ListReportsFunction\index.mjs)
+2026-07-14 06:54:21,498 | NodejsNpmBuilder:CopySource succeeded
+2026-07-14 06:54:21,500 | There is no customer defined id or cdk path defined for resource ReportsApi, so we will use the resource logical id as the resource id
+2026-07-14 06:54:21,500 | There is no customer defined id or cdk path defined for resource ReportsTable, so we will use the resource logical id as the resource id
+2026-07-14 06:54:21,500 | There is no customer defined id or cdk path defined for resource UserPool, so we will use the resource logical id as the resource id
+2026-07-14 06:54:21,501 | There is no customer defined id or cdk path defined for resource UserPoolClient, so we will use the resource logical id as the resource id
+2026-07-14 06:54:21,501 | There is no customer defined id or cdk path defined for resource CreateReportFunction, so we will use the resource logical id as the resource id
+2026-07-14 06:54:21,502 | There is no customer defined id or cdk path defined for resource UserProfilesTable, so we will use the resource logical id as the resource id
+2026-07-14 06:54:21,502 | There is no customer defined id or cdk path defined for resource UserProfileImagesBucket, so we will use the resource logical id as the resource id
+2026-07-14 06:54:21,502 | There is no customer defined id or cdk path defined for resource ProfileFunction, so we will use the resource logical id as the resource id
+2026-07-14 06:54:21,504 | There is no customer defined id or cdk path defined for resource ListReportsFunction, so we will use the resource logical id as the resource id
+2026-07-14 06:54:21,505 | 9 resources found in the stack 
+2026-07-14 06:54:21,505 | Found Serverless function with name='CreateReportFunction' and CodeUri='lambda/createReport/'
+2026-07-14 06:54:21,506 | Found Serverless function with name='ProfileFunction' and CodeUri='profile-lambda/'
+2026-07-14 06:54:21,506 | Found Serverless function with name='ListReportsFunction' and CodeUri='lambda/listReports/'
+
+Build Succeeded
+
+Built Artifacts  : .aws-sam\build
+Built Template   : .aws-sam\build\template.yaml
+
+Commands you can use next
+=========================
+[*] Validate SAM template: sam validate
+[*] Invoke Function: sam local invoke
+[*] Test Function in the Cloud: sam sync --stack-name {{stack-name}} --watch
+[*] Deploy: sam deploy --guided
+2026-07-14 06:54:21,623 | Telemetry endpoint configured to be https://aws-serverless-tools-telemetry.us-west-2.amazonaws.com/metrics
+2026-07-14 06:54:22,489 | No container socket path in global storage, falling back to DOCKER_HOST detection: 
+2026-07-14 06:54:22,490 | Telemetry endpoint configured to be https://aws-serverless-tools-telemetry.us-west-2.amazonaws.com/metrics
+2026-07-14 06:54:22,491 | Unable to find Click Context for getting session_id.
+2026-07-14 06:54:22,491 | Sending Telemetry: {'metrics': [{'commandRun': {'requestId': '23905c9a-3964-4d06-9228-2f4b677b2a57', 'installationId': 'ae9c8980-96cc-46b3-8482-545b3bc2ce9a', 'sessionId': 'b43ffca3-1706-463d-8453-d79cd04cedd1', 'executionEnvironment': 'CLI', 'ci': False, 'pyversion': '3.14.3', 'samcliVersion': '1.163.0', 'osPlatform': 'Windows', 'awsProfileProvided': False, 'debugFlagProvided': True, 'region': '', 'commandName': 'sam build', 'metricSpecificAttributes': {'projectType': 'CFN', 'gitOrigin': '0eef1fbe49fd57ea75b837e1212ea4da79e63885b7830d05ee85795a003e7443', 'projectName': '9d972132b2dfa387b6891ac1c5afdb8a13f1f2ba1120446ac73035a07cd16f12', 'initialCommit': 'e70cd9b1e8a5030f11d29dc99c3b91faa835a85326e0c7b460a348dd98627bfc', 'containerEngine': 'docker-default', 'adminContainerPreference': None, 'functionFieldsUsed': {'codeuri': 3, 'environment': 3, 'events': 3}}, 'duration': 64767, 'exitReason': 'success', 'exitCode': 0}}]}
+2026-07-14 06:54:22,502 | No container socket path in global storage, falling back to DOCKER_HOST detection: 
+2026-07-14 06:54:22,503 | Sending Telemetry: {'metrics': [{'events': {'requestId': '0941a119-2109-449e-baa3-2b705eda4811', 'installationId': 'ae9c8980-96cc-46b3-8482-545b3bc2ce9a', 'sessionId': 'b43ffca3-1706-463d-8453-d79cd04cedd1', 'executionEnvironment': 'CLI', 'ci': False, 'pyversion': '3.14.3', 'samcliVersion': '1.163.0', 'osPlatform': 'Windows', 'commandName': 'sam build', 'metricSpecificAttributes': {'events': [{'event_name': 'SamConfigFileExtension', 'event_value': '.toml', 'thread_id': '341bc58cacf84c999e79e113dcde660a', 'time_stamp': '2026-07-14 05:53:16.618943+00', 'exception_name': None}, {'event_name': 'SamConfigFileExtension', 'event_value': '.toml', 'thread_id': '7b2623c8d1df4fa998954589361e3e4a', 'time_stamp': '2026-07-14 05:53:16.851456+00', 'exception_name': None}, {'event_name': 'BuildFunctionRuntime', 'event_value': 'nodejs20.x', 'thread_id': '5d2835f04f8f4d1281e293a8559e076d', 'time_stamp': '2026-07-14 05:53:25.073537+00', 'exception_name': None}, {'event_name': 'BuildFunctionRuntime', 'event_value': 'nodejs20.x', 'thread_id': '8dc55c4bf7154fd892ec972d4bb7d4df', 'time_stamp': '2026-07-14 05:53:25.073685+00', 'exception_name': None}, {'event_name': 'BuildFunctionRuntime', 'event_value': 'nodejs20.x', 'thread_id': '34a779445da644d4af3dec5df3b1735b', 'time_stamp': '2026-07-14 05:53:25.073801+00', 'exception_name': None}, {'event_name': 'BuildWorkflowUsed', 'event_value': 'nodejs-npm', 'thread_id': '255ab78de9514a458a2478ffe280f41d', 'time_stamp': '2026-07-14 05:53:25.131890+00', 'exception_name': None}, {'event_name': 'BuildWorkflowUsed', 'event_value': 'nodejs-npm', 'thread_id': '5e511c85bf524c709cae1c78cd9006c1', 'time_stamp': '2026-07-14 05:54:21.287744+00', 'exception_name': None}, {'event_name': 'BuildWorkflowUsed', 'event_value': 'nodejs-npm', 'thread_id': '1c907e82da7e41d9929954628ff1c7e9', 'time_stamp': '2026-07-14 05:54:21.396231+00', 'exception_name': None}], 'containerEngine': 'docker-default'}}}]}
+2026-07-14 06:54:27,358 | HTTPSConnectionPool(host='aws-serverless-tools-telemetry.us-west-2.amazonaws.com', port=443): Read timed out. (read timeout=0.1)
+2026-07-14 06:54:27,358 | HTTPSConnectionPool(host='aws-serverless-tools-telemetry.us-west-2.amazonaws.com', port=443): Read timed out. (read timeout=0.1)

@@ -1,0 +1,107 @@
+2026-07-14 07:20:20,030 | Config file location: C:\Users\Admin\Downloads\engineer-movement-report\backend\samconfig.toml
+2026-07-14 07:20:20,031 | Loading configuration values from [default.['deploy'].parameters] (env.command_name.section) in config file at 'C:\Users\Admin\Downloads\engineer-movement-report\backend\samconfig.toml'...
+2026-07-14 07:20:20,031 | Configuration values successfully loaded.
+2026-07-14 07:20:20,031 | Configuration values are: {'stack_name': 'engineer-movement-report', 'resolve_s3': True, 's3_prefix': 'engineer-movement-report', 'region': 'us-east-1', 'confirm_changeset': False, 'capabilities': 'CAPABILITY_IAM CAPABILITY_AUTO_EXPAND'}
+2026-07-14 07:20:20,105 | Empty parameter set ({})
+2026-07-14 07:20:20,277 | Using config file: samconfig.toml, config environment: default
+2026-07-14 07:20:20,277 | Expand command line arguments to:
+2026-07-14 07:20:20,278 | --template_file=C:\Users\Admin\Downloads\engineer-movement-report\backend\packaged.yaml --stack_name=engineer-movement-report --capabilities=('CAPABILITY_IAM', 'CAPABILITY_AUTO_EXPAND') --fail_on_empty_changeset --on_failure=ROLLBACK --max_wait_duration=60 --s3_prefix=engineer-movement-report --resolve_s3 
+
+	Managed S3 bucket: aws-sam-cli-managed-default-samclisourcebucket-vaj00qpavrhm
+	Auto resolution of buckets can be turned off by setting resolve_s3=False
+	To use a specific S3 bucket, set --s3-bucket=<bucket_name>
+	Above settings can be stored in samconfig.toml
+2026-07-14 07:20:25,512 | No Parameters detected in the template
+2026-07-14 07:20:25,664 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsApi is ReportsApi
+2026-07-14 07:20:25,665 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsTable is ReportsTable
+2026-07-14 07:20:25,665 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPool is UserPool
+2026-07-14 07:20:25,665 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPoolClient is UserPoolClient
+2026-07-14 07:20:25,665 | Sam customer defined id is more priority than other IDs. Customer defined id for resource CreateReportFunction is CreateReportFunction
+2026-07-14 07:20:25,666 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfilesTable is UserProfilesTable
+2026-07-14 07:20:25,667 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfileImagesBucket is UserProfileImagesBucket
+2026-07-14 07:20:25,667 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ProfileFunction is ProfileFunction
+2026-07-14 07:20:25,668 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ListReportsFunction is ListReportsFunction
+2026-07-14 07:20:25,679 | 0 stacks found in the template
+2026-07-14 07:20:25,680 | No Parameters detected in the template
+2026-07-14 07:20:25,810 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsApi is ReportsApi
+2026-07-14 07:20:25,810 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsTable is ReportsTable
+2026-07-14 07:20:25,810 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPool is UserPool
+2026-07-14 07:20:25,811 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPoolClient is UserPoolClient
+2026-07-14 07:20:25,811 | Sam customer defined id is more priority than other IDs. Customer defined id for resource CreateReportFunction is CreateReportFunction
+2026-07-14 07:20:25,811 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfilesTable is UserProfilesTable
+2026-07-14 07:20:25,811 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfileImagesBucket is UserProfileImagesBucket
+2026-07-14 07:20:25,812 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ProfileFunction is ProfileFunction
+2026-07-14 07:20:25,812 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ListReportsFunction is ListReportsFunction
+2026-07-14 07:20:26,071 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsApi is ReportsApi
+2026-07-14 07:20:26,071 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsTable is ReportsTable
+2026-07-14 07:20:26,071 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPool is UserPool
+2026-07-14 07:20:26,072 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPoolClient is UserPoolClient
+2026-07-14 07:20:26,072 | Sam customer defined id is more priority than other IDs. Customer defined id for resource CreateReportFunction is CreateReportFunction
+2026-07-14 07:20:26,072 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfilesTable is UserProfilesTable
+2026-07-14 07:20:26,072 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfileImagesBucket is UserProfileImagesBucket
+2026-07-14 07:20:26,072 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ProfileFunction is ProfileFunction
+2026-07-14 07:20:26,072 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ListReportsFunction is ListReportsFunction
+2026-07-14 07:20:26,074 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsApi is ReportsApi
+2026-07-14 07:20:26,074 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsTable is ReportsTable
+2026-07-14 07:20:26,074 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPool is UserPool
+2026-07-14 07:20:26,074 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPoolClient is UserPoolClient
+2026-07-14 07:20:26,074 | Sam customer defined id is more priority than other IDs. Customer defined id for resource CreateReportFunction is CreateReportFunction
+2026-07-14 07:20:26,075 | Property CodeUri of CreateReportFunction is already a S3 URL
+2026-07-14 07:20:26,075 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfilesTable is UserProfilesTable
+2026-07-14 07:20:26,075 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfileImagesBucket is UserProfileImagesBucket
+2026-07-14 07:20:26,075 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ProfileFunction is ProfileFunction
+2026-07-14 07:20:26,076 | Property CodeUri of ProfileFunction is already a S3 URL
+2026-07-14 07:20:26,076 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ListReportsFunction is ListReportsFunction
+2026-07-14 07:20:26,076 | Property CodeUri of ListReportsFunction is already a S3 URL
+
+	Deploying with following values
+	===============================
+	Stack name                   : engineer-movement-report
+	Region                       : us-east-1
+	Confirm changeset            : False
+	Disable rollback             : False
+	Deployment s3 bucket         : aws-sam-cli-managed-default-samclisourcebucket-vaj00qpavrhm
+	Capabilities                 : ["CAPABILITY_IAM", "CAPABILITY_AUTO_EXPAND"]
+	Parameter overrides          : {}
+	Signing Profiles             : {}
+
+Initiating deployment
+=====================
+
+2026-07-14 07:20:26,305 | No Parameters detected in the template
+2026-07-14 07:20:26,418 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsApi is ReportsApi
+2026-07-14 07:20:26,418 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsTable is ReportsTable
+2026-07-14 07:20:26,419 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPool is UserPool
+2026-07-14 07:20:26,419 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPoolClient is UserPoolClient
+2026-07-14 07:20:26,420 | Sam customer defined id is more priority than other IDs. Customer defined id for resource CreateReportFunction is CreateReportFunction
+2026-07-14 07:20:26,420 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfilesTable is UserProfilesTable
+2026-07-14 07:20:26,420 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfileImagesBucket is UserProfileImagesBucket
+2026-07-14 07:20:26,420 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ProfileFunction is ProfileFunction
+2026-07-14 07:20:26,421 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ListReportsFunction is ListReportsFunction
+2026-07-14 07:20:26,426 | 0 stacks found in the template
+2026-07-14 07:20:26,427 | No Parameters detected in the template
+2026-07-14 07:20:26,541 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsApi is ReportsApi
+2026-07-14 07:20:26,542 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ReportsTable is ReportsTable
+2026-07-14 07:20:26,542 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPool is UserPool
+2026-07-14 07:20:26,542 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserPoolClient is UserPoolClient
+2026-07-14 07:20:26,542 | Sam customer defined id is more priority than other IDs. Customer defined id for resource CreateReportFunction is CreateReportFunction
+2026-07-14 07:20:26,542 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfilesTable is UserProfilesTable
+2026-07-14 07:20:26,543 | Sam customer defined id is more priority than other IDs. Customer defined id for resource UserProfileImagesBucket is UserProfileImagesBucket
+2026-07-14 07:20:26,543 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ProfileFunction is ProfileFunction
+2026-07-14 07:20:26,543 | Sam customer defined id is more priority than other IDs. Customer defined id for resource ListReportsFunction is ListReportsFunction
+2026-07-14 07:20:26,549 | 9 resources found in the stack 
+	Uploading to engineer-movement-report/2c4453cb0e19f2c1acc1f5c6e07f9af9.template  5897 / 5897  (100.00%)
+
+
+Waiting for changeset to be created..
+
+2026-07-14 07:20:45,341 | Telemetry endpoint configured to be https://aws-serverless-tools-telemetry.us-west-2.amazonaws.com/metrics
+2026-07-14 07:20:45,944 | No container socket path in global storage, falling back to DOCKER_HOST detection: 
+2026-07-14 07:20:45,944 | Telemetry endpoint configured to be https://aws-serverless-tools-telemetry.us-west-2.amazonaws.com/metrics
+2026-07-14 07:20:45,945 | Unable to find Click Context for getting session_id.
+2026-07-14 07:20:45,945 | Sending Telemetry: {'metrics': [{'commandRun': {'requestId': '3a7f7254-7b42-497d-b556-1453f4bd2943', 'installationId': 'ae9c8980-96cc-46b3-8482-545b3bc2ce9a', 'sessionId': '1aff9921-d8a2-4d6c-bd0e-a0781cd0a06b', 'executionEnvironment': 'CLI', 'ci': False, 'pyversion': '3.14.3', 'samcliVersion': '1.163.0', 'osPlatform': 'Windows', 'awsProfileProvided': False, 'debugFlagProvided': True, 'region': 'us-east-1', 'commandName': 'sam deploy', 'metricSpecificAttributes': {'projectType': 'CFN', 'gitOrigin': '0eef1fbe49fd57ea75b837e1212ea4da79e63885b7830d05ee85795a003e7443', 'projectName': '9d972132b2dfa387b6891ac1c5afdb8a13f1f2ba1120446ac73035a07cd16f12', 'initialCommit': 'e70cd9b1e8a5030f11d29dc99c3b91faa835a85326e0c7b460a348dd98627bfc', 'containerEngine': 'docker-default', 'adminContainerPreference': None}, 'duration': 25063, 'exitReason': 'ChangeSetError', 'exitCode': 1}}]}
+2026-07-14 07:20:45,952 | No container socket path in global storage, falling back to DOCKER_HOST detection: 
+2026-07-14 07:20:45,954 | Sending Telemetry: {'metrics': [{'events': {'requestId': 'f25577b7-54d6-44cb-ad21-4717f45350bb', 'installationId': 'ae9c8980-96cc-46b3-8482-545b3bc2ce9a', 'sessionId': '1aff9921-d8a2-4d6c-bd0e-a0781cd0a06b', 'executionEnvironment': 'CLI', 'ci': False, 'pyversion': '3.14.3', 'samcliVersion': '1.163.0', 'osPlatform': 'Windows', 'commandName': 'sam deploy', 'metricSpecificAttributes': {'events': [{'event_name': 'SamConfigFileExtension', 'event_value': '.toml', 'thread_id': 'b32524365d944cbf9072d500933ea84a', 'time_stamp': '2026-07-14 06:20:20.029794+00', 'exception_name': None}, {'event_name': 'SamConfigFileExtension', 'event_value': '.toml', 'thread_id': '4ce7dcf189b04c8d8a0819f80292e5e6', 'time_stamp': '2026-07-14 06:20:20.209406+00', 'exception_name': None}], 'containerEngine': 'docker-default'}}}]}
+2026-07-14 07:20:49,026 | HTTPSConnectionPool(host='aws-serverless-tools-telemetry.us-west-2.amazonaws.com', port=443): Read timed out. (read timeout=0.1)
+Error: Failed to create changeset for the stack: engineer-movement-report, ex: Waiter ChangeSetCreateComplete failed: Waiter encountered a terminal failure state: For expression "Status" we matched expected path: "FAILED" Status: FAILED. Reason: The following hook(s)/validation failed: [AWS::EarlyValidation::PropertyValidation]. To troubleshoot Early Validation errors, use the DescribeEvents API for detailed failure information.
+2026-07-14 07:20:49,113 | HTTPSConnectionPool(host='aws-serverless-tools-telemetry.us-west-2.amazonaws.com', port=443): Read timed out. (read timeout=0.1)

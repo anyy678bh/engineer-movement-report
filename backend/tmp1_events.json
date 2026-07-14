@@ -1,0 +1,44 @@
+{
+    "StackEvents": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:435998720983:stack/cf-test-1/cd962110-7f52-11f1-9e04-0ebd9adba6b5",
+            "EventId": "UserProfileImagesBucket-CREATE_IN_PROGRESS-2026-07-14T07:08:27.778Z",
+            "StackName": "cf-test-1",
+            "OperationId": "cd9780a0-7f52-11f1-9e04-0ebd9adba6b5",
+            "LogicalResourceId": "UserProfileImagesBucket",
+            "PhysicalResourceId": "cf-test-1-userprofileimagesbucket-5lcghzhjkifu",
+            "ResourceType": "AWS::S3::Bucket",
+            "Timestamp": "2026-07-14T07:08:27.778000+00:00",
+            "ResourceStatus": "CREATE_IN_PROGRESS",
+            "ResourceStatusReason": "Resource creation Initiated",
+            "ResourceProperties": "{}",
+            "ClientRequestToken": "48438d71-0ea5-45fb-ba8e-8232e3013c4c"
+        },
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:435998720983:stack/cf-test-1/cd962110-7f52-11f1-9e04-0ebd9adba6b5",
+            "EventId": "UserProfileImagesBucket-CREATE_IN_PROGRESS-2026-07-14T07:08:26.477Z",
+            "StackName": "cf-test-1",
+            "OperationId": "cd9780a0-7f52-11f1-9e04-0ebd9adba6b5",
+            "LogicalResourceId": "UserProfileImagesBucket",
+            "PhysicalResourceId": "",
+            "ResourceType": "AWS::S3::Bucket",
+            "Timestamp": "2026-07-14T07:08:26.477000+00:00",
+            "ResourceStatus": "CREATE_IN_PROGRESS",
+            "ResourceProperties": "{}",
+            "ClientRequestToken": "48438d71-0ea5-45fb-ba8e-8232e3013c4c"
+        },
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:435998720983:stack/cf-test-1/cd962110-7f52-11f1-9e04-0ebd9adba6b5",
+            "EventId": "cd9780a0-7f52-11f1-9e04-0ebd9adba6b5",
+            "StackName": "cf-test-1",
+            "OperationId": "cd9780a0-7f52-11f1-9e04-0ebd9adba6b5",
+            "LogicalResourceId": "cf-test-1",
+            "PhysicalResourceId": "arn:aws:cloudformation:us-east-1:435998720983:stack/cf-test-1/cd962110-7f52-11f1-9e04-0ebd9adba6b5",
+            "ResourceType": "AWS::CloudFormation::Stack",
+            "Timestamp": "2026-07-14T07:08:23.879000+00:00",
+            "ResourceStatus": "CREATE_IN_PROGRESS",
+            "ResourceStatusReason": "User Initiated",
+            "ClientRequestToken": "48438d71-0ea5-45fb-ba8e-8232e3013c4c"
+        }
+    ]
+}

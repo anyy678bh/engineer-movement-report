@@ -1,0 +1,1 @@
+sam_validate_uswest2.txt:C:\Users\Admin\Downloads\engineer-movement-report\backend\packaged_uswest2.yaml is a valid SAM Template. This is according to basic SAM Validation, for additional validation, please run with "--lint" option

@@ -1,0 +1,4 @@
+{
+    "Id": "arn:aws:cloudformation:us-west-2:435998720983:changeSet/test-ownership-001/4e04d549-4280-4644-88e4-35ad5925b818",
+    "StackId": "arn:aws:cloudformation:us-west-2:435998720983:stack/test-ownership-bucket/3c7b1330-7fab-11f1-9ca7-0ad847be9f4b"
+}

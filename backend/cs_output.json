@@ -1,0 +1,27 @@
+{
+    "Changes": [],
+    "ChangeSetName": "test-fixed-001",
+    "ChangeSetId": "arn:aws:cloudformation:us-west-2:435998720983:changeSet/test-fixed-001/c68aee0f-d225-438d-90af-83fc04f589bc",
+    "StackId": "arn:aws:cloudformation:us-west-2:435998720983:stack/test-fixed-cors/1e036040-7fb2-11f1-9177-06857ca6ccb1",
+    "StackName": "test-fixed-cors",
+    "Description": null,
+    "Parameters": null,
+    "CreationTime": "2026-07-14T18:30:40.993000+00:00",
+    "ExecutionStatus": "UNAVAILABLE",
+    "Status": "FAILED",
+    "StatusReason": "Transform AWS::Serverless-2016-10-31 failed with: Invalid Serverless Application Specification document. Number of errors found: 3. Resource with id [ProfileFunction] is invalid. 'CodeUri' is not a valid S3 Uri of the form 's3://bucket/key' with optional versionId query parameter. Resource with id [ListReportsFunction] is invalid. 'CodeUri' is not a valid S3 Uri of the form 's3://bucket/key' with optional versionId query parameter. Resource with id [CreateReportFunction] is invalid. 'CodeUri' is not a valid S3 Uri of the form 's3://bucket/key' with optional versionId query parameter.",
+    "NotificationARNs": [],
+    "RollbackConfiguration": {},
+    "Capabilities": [
+        "CAPABILITY_IAM",
+        "CAPABILITY_AUTO_EXPAND"
+    ],
+    "Tags": null,
+    "ParentChangeSetId": null,
+    "IncludeNestedStacks": false,
+    "RootChangeSetId": null,
+    "OnStackFailure": null,
+    "ImportExistingResources": null,
+    "StackDriftStatus": null,
+    "DeploymentMode": null
+}
