@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Engineer Movement Report</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20260715" />
   </head>
   <body>
     <header class="hero">
@@ -53,6 +53,11 @@
           </label>
 
           <label>
+            Engineer Name
+            <input type="text" id="engineerName" placeholder="Enter engineer name" required />
+          </label>
+
+          <label>
             Location
             <input type="text" id="location" placeholder="Site or city" required />
           </label>
@@ -73,6 +78,11 @@
           </label>
 
           <label>
+            Hours Spent
+            <input type="number" id="hoursSpent" placeholder="Enter hours spent" min="0" step="0.1" />
+          </label>
+
+          <label>
             Type of Machine Repaired
             <input type="text" id="machineType" placeholder="Forklift, stacker, EPT " required />
           </label>
@@ -85,6 +95,33 @@
           <button type="submit">Save report</button>
         </form>
         <div id="formStatus" class="status-pill" role="status" aria-live="polite"></div>
+      </section>
+
+      <section id="engineerDialog" class="modal hidden" aria-hidden="true">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+          <h3>Additional engineers on site?</h3>
+          <p>We will record the main engineer first, then any additional engineers you want to add.</p>
+
+          <div id="engineerQuestionSection">
+            <div class="modal-actions">
+              <button id="engineerNoBtn" type="button">No, only me</button>
+              <button id="engineerYesBtn" type="button">Yes, there were others</button>
+            </div>
+          </div>
+
+          <div id="engineerCountSection" class="hidden">
+            <label>
+              How many other engineers were on site?
+              <input type="number" id="otherEngineerCount" min="1" step="1" placeholder="e.g. 2" />
+            </label>
+            <button id="engineerCountSubmitBtn" type="button">Continue</button>
+          </div>
+
+          <div id="engineerFieldsSection" class="hidden"></div>
+
+          <button id="engineerCancelBtn" type="button" class="ghost">Cancel</button>
+        </div>
       </section>
 
       <section class="card">
@@ -145,7 +182,7 @@
       </section>
     </main>
 
-    <script src="config.js?v=20260713"></script>
-    <script src="app.js?v=20260713"></script>
+    <script src="config.js?v=20260715"></script>
+    <script src="app.js?v=20260715"></script>
   </body>
 </html>

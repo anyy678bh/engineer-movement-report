@@ -8,12 +8,22 @@ const profileForm = document.getElementById('profileForm');
 const transportTypeSelect = document.getElementById('transportType');
 const vehiclePlateInput = document.getElementById('vehiclePlateNumber');
 const vehiclePlateContainer = document.getElementById('vehiclePlateContainer');
+const engineerDialog = document.getElementById('engineerDialog');
+const engineerQuestionSection = document.getElementById('engineerQuestionSection');
+const engineerCountSection = document.getElementById('engineerCountSection');
+const engineerFieldsSection = document.getElementById('engineerFieldsSection');
+const engineerNoBtn = document.getElementById('engineerNoBtn');
+const engineerYesBtn = document.getElementById('engineerYesBtn');
+const engineerCountInput = document.getElementById('otherEngineerCount');
+const engineerCountSubmitBtn = document.getElementById('engineerCountSubmitBtn');
+const engineerCancelBtn = document.getElementById('engineerCancelBtn');
 const profileImageFileInput = document.getElementById('profileImageFile');
 const removeProfileImageBtn = document.getElementById('removeProfileImageBtn');
 const profileImagePreview = document.getElementById('profileImagePreview');
 const profileImagePreviewPlaceholder = document.getElementById('profileImagePreviewPlaceholder');
 const resetPasswordBtn = document.getElementById('resetPasswordBtn');
 const logoutBtn = document.getElementById('logoutBtn');
+let pendingEntry = null;
 const loginMessage = document.getElementById('loginMessage');
 const profileMessage = document.getElementById('profileMessage');
 const registerMessage = document.getElementById('registerMessage');
@@ -71,6 +81,111 @@ function getEntries() {
 
 function saveEntries(entries) {
   localStorage.setItem(getReportsKey(), JSON.stringify(entries));
+}
+
+function setPendingEntry(entry) {
+  pendingEntry = entry;
+}
+
+function clearPendingEntry() {
+  pendingEntry = null;
+}
+
+function resetEngineerDialogState() {
+  if (engineerQuestionSection) {
+    engineerQuestionSection.classList.remove('hidden');
+  }
+  if (engineerCountSection) {
+    engineerCountSection.classList.add('hidden');
+  }
+  if (engineerFieldsSection) {
+    engineerFieldsSection.classList.add('hidden');
+    engineerFieldsSection.innerHTML = '';
+  }
+  if (engineerCountInput) {
+    engineerCountInput.value = '';
+  }
+}
+
+function showEngineerDialog() {
+  if (!engineerDialog) return;
+  resetEngineerDialogState();
+  engineerDialog.classList.remove('hidden');
+  engineerDialog.setAttribute('aria-hidden', 'false');
+}
+
+function hideEngineerDialog() {
+  if (!engineerDialog) return;
+  engineerDialog.classList.add('hidden');
+  engineerDialog.setAttribute('aria-hidden', 'true');
+}
+
+function renderAdditionalEngineerFields(count) {
+  if (!engineerFieldsSection) return;
+  const safeCount = Math.max(0, Number(count) || 0);
+
+  if (safeCount <= 0) {
+    engineerFieldsSection.classList.add('hidden');
+    engineerFieldsSection.innerHTML = '';
+    return;
+  }
+
+  engineerFieldsSection.innerHTML = `
+    ${Array.from({ length: safeCount }, (_, index) => `
+      <label>
+        Other Engineer ${index + 1}
+        <input type="text" data-engineer-index="${index}" placeholder="Enter engineer name" />
+      </label>
+    `).join('')}
+    <button id="engineerNamesSubmitBtn" type="button">Submit report</button>
+  `;
+
+  engineerFieldsSection.classList.remove('hidden');
+  if (engineerCountSection) {
+    engineerCountSection.classList.add('hidden');
+  }
+  if (engineerQuestionSection) {
+    engineerQuestionSection.classList.add('hidden');
+  }
+  if (engineerDialog) {
+    engineerDialog.classList.remove('hidden');
+    engineerDialog.setAttribute('aria-hidden', 'false');
+  }
+
+  const submitButton = document.getElementById('engineerNamesSubmitBtn');
+  if (submitButton) {
+    submitButton.onclick = async () => {
+      if (!pendingEntry) return;
+      const otherEngineerNames = Array.from(engineerFieldsSection.querySelectorAll('input[data-engineer-index]'))
+        .map((input) => input.value.trim())
+        .filter(Boolean);
+      pendingEntry.otherEngineerNames = otherEngineerNames;
+      await finalizePendingEntry();
+    };
+  }
+}
+
+async function finalizePendingEntry() {
+  if (!pendingEntry) return;
+  const entry = { ...pendingEntry, otherEngineerNames: Array.isArray(pendingEntry.otherEngineerNames) ? pendingEntry.otherEngineerNames : [] };
+  clearPendingEntry();
+  resetEngineerDialogState();
+  hideEngineerDialog();
+
+  const entries = [entry, ...getEntries()];
+  saveEntries(entries);
+  const synced = await syncReportToApi(entry);
+  renderEntries();
+  await renderCompanyChart();
+  if (form) {
+    form.reset();
+  }
+
+  if (synced) {
+    setFormStatus('Report saved successfully and synced.', 'success');
+  } else {
+    setFormStatus('Report saved locally. Sync will retry when the connection is available.', 'error');
+  }
 }
 
 async function syncReportToApi(entry) {
@@ -465,16 +580,25 @@ function buildEntryMarkup(entry) {
   const plateNumber = entry.vehiclePlateNumber || '';
   const machineType = entry.machineType || 'N/A';
   const serviceRendered = entry.serviceRendered || 'N/A';
+  const hoursSpent = entry.hoursSpent != null ? `${entry.hoursSpent} hours` : null;
+  const people = entry.engineerName ? `<p><strong>Engineer:</strong> ${entry.engineerName}</p>` : '';
+  const otherEngineerNames = Array.isArray(entry.otherEngineerNames) && entry.otherEngineerNames.length
+    ? entry.otherEngineerNames.join(', ')
+    : (entry.otherEngineerName ? entry.otherEngineerName : '');
+  const otherEngineer = otherEngineerNames ? `<p><strong>Other Engineers:</strong> ${otherEngineerNames}</p>` : '';
 
   return `
     <article class="entry">
       <h3>${company}</h3>
       <p><strong>Date:</strong> ${date}</p>
       <p><strong>Location:</strong> ${location}</p>
+      ${people}
+      ${otherEngineer}
       <p><strong>Transport:</strong> ${transportType}</p>
       ${plateNumber ? `<p><strong>Plate #:</strong> ${plateNumber}</p>` : ''}
       <p><strong>Machine:</strong> ${machineType}</p>
       <p><strong>Service:</strong> ${serviceRendered}</p>
+      ${hoursSpent ? `<p><strong>Hours:</strong> ${hoursSpent}</p>` : ''}
     </article>
   `;
 }
@@ -1203,7 +1327,7 @@ function handleLogin(event) {
 }
 
 if (form) {
-  form.addEventListener('submit', async (event) => {
+  form.onsubmit = async (event) => {
     event.preventDefault();
 
     if (!getSession()) {
@@ -1214,30 +1338,25 @@ if (form) {
       return;
     }
 
+    const engineerNameValue = document.getElementById('engineerName').value.trim();
     const entry = {
       id: Date.now(),
       date: document.getElementById('date').value,
       companyName: document.getElementById('companyName').value.trim(),
+      engineerName: engineerNameValue || 'Unknown engineer',
       location: document.getElementById('location').value.trim(),
       transportType: document.getElementById('transportType').value,
       vehiclePlateNumber: getVehiclePlateNumber(),
       machineType: document.getElementById('machineType').value.trim(),
       serviceRendered: document.getElementById('serviceRendered').value.trim(),
+      hoursSpent: Number(document.getElementById('hoursSpent').value) || 0,
+      otherEngineerName: null,
+      otherEngineerNames: [],
     };
 
-    const entries = [entry, ...getEntries()];
-    saveEntries(entries);
-    const synced = await syncReportToApi(entry);
-    renderEntries();
-    await renderCompanyChart();
-    form.reset();
-
-    if (synced) {
-      setFormStatus('Report saved successfully and synced.', 'success');
-    } else {
-      setFormStatus('Report saved locally. Sync will retry when the connection is available.', 'error');
-    }
-  });
+    setPendingEntry(entry);
+    showEngineerDialog();
+  };
 }
 
 if (clearBtn) {
@@ -1298,6 +1417,49 @@ if (logoutBtn) {
 
 if (transportTypeSelect) {
   transportTypeSelect.addEventListener('change', updateVehiclePlateRequirement);
+}
+
+if (engineerNoBtn) {
+  engineerNoBtn.onclick = async () => {
+    if (!pendingEntry) return;
+    pendingEntry.otherEngineerNames = [];
+    await finalizePendingEntry();
+  };
+}
+
+if (engineerYesBtn) {
+  engineerYesBtn.onclick = () => {
+    if (engineerQuestionSection) {
+      engineerQuestionSection.classList.add('hidden');
+    }
+    if (engineerCountSection) {
+      engineerCountSection.classList.remove('hidden');
+    }
+    if (engineerCountInput) {
+      engineerCountInput.focus();
+    }
+  };
+}
+
+if (engineerCountSubmitBtn) {
+  engineerCountSubmitBtn.onclick = () => {
+    if (!pendingEntry) return;
+    const count = Math.max(0, Number(engineerCountInput?.value) || 0);
+    if (count <= 0) {
+      pendingEntry.otherEngineerNames = [];
+      finalizePendingEntry();
+      return;
+    }
+    renderAdditionalEngineerFields(count);
+  };
+}
+
+if (engineerCancelBtn) {
+  engineerCancelBtn.onclick = () => {
+    hideEngineerDialog();
+    clearPendingEntry();
+    setFormStatus('Report submission cancelled.', 'error');
+  };
 }
 
 initializeEditProfileForm();

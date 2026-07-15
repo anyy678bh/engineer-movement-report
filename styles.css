@@ -37,6 +37,80 @@ body {
   min-height: 100vh;
 }
 
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(1, 10, 24, 0.75);
+}
+
+.modal-content {
+  position: relative;
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  padding: 2rem;
+  width: min(440px, 90vw);
+  max-height: min(90vh, 560px);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.modal-actions button,
+#engineerSubmitBtn {
+  flex: 1 1 140px;
+}
+
+#engineerOtherSection {
+  margin-top: 1rem;
+}
+
+#engineerOtherSection label {
+  display: block;
+}
+
+.modal-content .ghost {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+#engineerFieldsSection {
+  display: grid;
+  gap: 0.75rem;
+  max-height: min(40vh, 280px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+#engineerFieldsSection label {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 12px;
+  background: rgba(2, 6, 23, 0.42);
+}
+
 .hero-row {
   display: flex;
   justify-content: space-between;

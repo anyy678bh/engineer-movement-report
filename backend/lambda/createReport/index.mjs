@@ -34,10 +34,15 @@ export const handler = async (event) => {
     reportId,
     userEmail: body.userEmail || 'unknown@example.com',
     companyName: body.companyName,
+    engineerName: body.engineerName || 'Unknown engineer',
     location: body.location,
     transportType: body.transportType,
     machineType: body.machineType,
     serviceRendered: body.serviceRendered,
+    otherEngineerName: body.otherEngineerName || null,
+    otherEngineerNames: Array.isArray(body.otherEngineerNames)
+      ? body.otherEngineerNames.filter(Boolean)
+      : (body.otherEngineerName ? [body.otherEngineerName] : []),
     hoursSpent: Number.isFinite(hoursSpent) && hoursSpent >= 0 ? hoursSpent : 0,
     createdAt: new Date().toISOString(),
   };
