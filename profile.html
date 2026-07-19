@@ -24,17 +24,13 @@
     <main class="profile-shell">
       <section class="profile-card">
         <div class="profile-header">
-          <div class="avatar" id="profileAvatar">
-            <img id="profileAvatarImg" alt="Profile photo" />
-            <span id="profileAvatarInitials">AU</span>
-          </div>
           <div>
             <h2 id="profileName">User Name</h2>
             <p id="profileEmail" class="muted">user@company.com</p>
           </div>
         </div>
 
-                <div class="profile-details">
+        <div class="profile-details">
           <p><strong>Full name</strong><br /><span id="profileFullName">—</span></p>
           <p><strong>Department</strong><br /><span id="profileDepartment" class="muted">—</span></p>
           <p><strong>ID card number</strong><br /><span id="profileIdCard" class="muted">—</span></p>
@@ -51,52 +47,6 @@
       </section>
     </main>
 
-    <script>
-      (function () {
-        const session = JSON.parse(localStorage.getItem('engineer-user-session') || 'null');
-        const email = (session && session.email ? session.email : '').trim().toLowerCase();
-        const profileStorageKey = email ? `engineer-user-profile:${email}` : 'engineer-user-profile';
-        const profile = JSON.parse(localStorage.getItem(profileStorageKey) || localStorage.getItem('engineer-user-profile') || '{}');
-        const displayName = profile.fullName || (session && session.name) || 'Engineer User';
-        const displayEmail = profile.emailAddress || (session && session.email) || 'user@company.com';
-        const setText = (id, value) => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = value;
-        };
-
-        setText('profileName', displayName);
-        setText('profileEmail', displayEmail);
-        setText('profileFullName', profile.fullName || '—');
-        setText('profileDepartment', profile.department || '—');
-        setText('profileIdCard', profile.idCardNumber || '—');
-        setText('profileEmailDisplay', profile.emailAddress || displayEmail);
-
-        const avatarImg = document.getElementById('profileAvatarImg');
-        const avatarInitials = document.getElementById('profileAvatarInitials');
-        const imageSource = profile.profileImageUrl || profile.profileImageData;
-        if (avatarImg && avatarInitials) {
-          if (imageSource) {
-            avatarImg.src = imageSource;
-            avatarImg.style.display = 'block';
-            avatarInitials.style.display = 'none';
-          } else {
-            avatarImg.style.display = 'none';
-            avatarInitials.textContent = displayName
-              .split(' ')
-              .map((part) => part[0] || '')
-              .slice(0, 2)
-              .join('')
-              .toUpperCase();
-            avatarInitials.style.display = 'grid';
-          }
-        }
-
-        const debugEl = document.getElementById('profileDebug');
-        if (debugEl) {
-          debugEl.textContent = JSON.stringify(profile, null, 2) || 'No stored profile data.';
-        }
-      })();
-    </script>
     <script src="config.js?v=20260713"></script>
     <script src="app.js?v=20260713"></script>
   </body>

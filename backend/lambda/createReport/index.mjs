@@ -1,8 +1,23 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { MongoClient } from 'mongodb';
 
 const client = new DynamoDBClient({});
 const ddb = DynamoDBDocumentClient.from(client);
+
+const mongoUri = process.env.MONGODB_URI;
+let mongoClient = null;
+let mongoDb = null;
+
+async function getMongoCollection(collectionName) {
+  if (!mongoUri) return null;
+  if (!mongoClient) {
+    mongoClient = new MongoClient(mongoUri);
+    await mongoClient.connect();
+    mongoDb = mongoClient.db(process.env.MONGODB_DB || 'engineer-movement-report');
+  }
+  return mongoDb.collection(collectionName);
+}
 
 const corsHeaders = {
   'Content-Type': 'application/json',
@@ -24,8 +39,7 @@ export const handler = async (event) => {
   const body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body || {};
   const tenantId = body.tenantId || 'default';
   const reportId = body.reportId || crypto.randomUUID();
-
-  const hoursSpent = Number(body.hoursSpent ?? 0);
+  const createdAt = body.createdAt || new Date().toISOString();
 
   const item = {
     pk: `tenant#${tenantId}`,
@@ -33,21 +47,29 @@ export const handler = async (event) => {
     tenantId,
     reportId,
     userEmail: body.userEmail || 'unknown@example.com',
-    companyName: body.companyName,
-    engineerName: body.engineerName || 'Unknown engineer',
-    location: body.location,
-    transportType: body.transportType,
-    machineType: body.machineType,
-    serviceRendered: body.serviceRendered,
-    otherEngineerName: body.otherEngineerName || null,
-    otherEngineerNames: Array.isArray(body.otherEngineerNames)
-      ? body.otherEngineerNames.filter(Boolean)
-      : (body.otherEngineerName ? [body.otherEngineerName] : []),
-    hoursSpent: Number.isFinite(hoursSpent) && hoursSpent >= 0 ? hoursSpent : 0,
-    createdAt: new Date().toISOString(),
+    date: body.date || createdAt,
+    companyName: body.companyName || '',
+    engineerName: body.engineerName || '',
+    location: body.location || '',
+    transportType: body.transportType || '',
+    vehiclePlateNumber: body.vehiclePlateNumber || '',
+    machineType: body.machineType || '',
+    serviceRendered: body.serviceRendered || '',
+    hoursSpent: body.hoursSpent ?? 0,
+    otherEngineerNames: Array.isArray(body.otherEngineerNames) ? body.otherEngineerNames : [],
+    createdAt,
   };
 
-  await ddb.send(new PutCommand({ TableName: tableName, Item: item }));
+  const reportsCollection = await getMongoCollection('reports');
+  if (reportsCollection) {
+    await reportsCollection.updateOne(
+      { tenantId, reportId },
+      { $set: { ...item, _id: item.reportId } },
+      { upsert: true }
+    );
+  } else {
+    await ddb.send(new PutCommand({ TableName: tableName, Item: item }));
+  }
 
   return {
     statusCode: 201,

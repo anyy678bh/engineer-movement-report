@@ -7,15 +7,25 @@ Globals:
     Runtime: nodejs20.x
     Timeout: 30
 
+Parameters:
+  MongoDbUri:
+    Type: String
+    Default: ''
+    NoEcho: true
+    Description: Optional MongoDB connection string for Lambda persistence.
+
+  MongoDbName:
+    Type: String
+    Default: engineer-movement-report
+    Description: MongoDB database name used by the Lambda handlers.
+
 Resources:
   ReportsApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
-      Cors:
-        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
-        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-        AllowOrigin: "'*'"
+      EndpointConfiguration: REGIONAL
+      Cors: "'*'"
 
   ReportsTable:
     Type: AWS::DynamoDB::Table
@@ -66,6 +76,8 @@ Resources:
       Environment:
         Variables:
           REPORTS_TABLE: !Ref ReportsTable
+          MONGODB_URI: !Ref MongoDbUri
+          MONGODB_DB: !Ref MongoDbName
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ReportsTable
@@ -126,6 +138,8 @@ Resources:
         Variables:
           USER_PROFILES_TABLE: !Ref UserProfilesTable
           PROFILE_IMAGES_BUCKET: !Ref UserProfileImagesBucket
+          MONGODB_URI: !Ref MongoDbUri
+          MONGODB_DB: !Ref MongoDbName
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref UserProfilesTable
@@ -159,6 +173,8 @@ Resources:
       Environment:
         Variables:
           REPORTS_TABLE: !Ref ReportsTable
+          MONGODB_URI: !Ref MongoDbUri
+          MONGODB_DB: !Ref MongoDbName
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ReportsTable

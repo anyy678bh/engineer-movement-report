@@ -7,6 +7,7 @@
     "@aws-sdk/client-dynamodb": "^3.620.2",
     "@aws-sdk/client-s3": "^3.620.2",
     "@aws-sdk/lib-dynamodb": "^3.620.2",
-    "@aws-sdk/s3-request-presigner": "^3.620.2"
+    "@aws-sdk/s3-request-presigner": "^3.620.2",
+    "mongodb": "^6.8.0"
   }
 }

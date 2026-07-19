@@ -2,10 +2,25 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand, GetCommand } from '@aws-sdk/lib-dynamodb';
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { MongoClient } from 'mongodb';
 
 const client = new DynamoDBClient({});
 const ddb = DynamoDBDocumentClient.from(client);
 const s3Client = new S3Client({});
+
+const mongoUri = process.env.MONGODB_URI;
+let mongoClient = null;
+let mongoDb = null;
+
+async function getMongoCollection(collectionName) {
+  if (!mongoUri) return null;
+  if (!mongoClient) {
+    mongoClient = new MongoClient(mongoUri);
+    await mongoClient.connect();
+    mongoDb = mongoClient.db(process.env.MONGODB_DB || 'engineer-movement-report');
+  }
+  return mongoDb.collection(collectionName);
+}
 
 const corsHeaders = {
   'Content-Type': 'application/json',
@@ -120,6 +135,15 @@ export const handler = async (event) => {
     }
 
     try {
+      const profilesCollection = await getMongoCollection('user_profiles');
+      if (profilesCollection) {
+        const profile = await profilesCollection.findOne({ userId, tenantId });
+        return {
+          statusCode: 200,
+          headers: corsHeaders,
+          body: JSON.stringify(profile || {}),
+        };
+      }
       const result = await ddb.send(new GetCommand({ TableName: tableName, Key: { userId, tenantId } }));
       return {
         statusCode: 200,
@@ -136,6 +160,64 @@ export const handler = async (event) => {
     }
   }
 
+  if (body.action === 'login') {
+    const userId = body.userId || body.emailAddress || body.email || '';
+    const password = body.password || '';
+
+    if (!userId || !password) {
+      return {
+        statusCode: 400,
+        headers: corsHeaders,
+        body: JSON.stringify({ message: 'Missing userId or password' }),
+      };
+    }
+
+    try {
+      const profilesCollection = await getMongoCollection('user_profiles');
+      if (profilesCollection) {
+        const item = await profilesCollection.findOne({ userId, tenantId });
+        if (!item?.emailAddress || item.password !== password) {
+          return {
+            statusCode: 401,
+            headers: corsHeaders,
+            body: JSON.stringify({ message: 'Invalid email or password' }),
+          };
+        }
+        const safeItem = { ...item };
+        delete safeItem.password;
+        return {
+          statusCode: 200,
+          headers: corsHeaders,
+          body: JSON.stringify({ success: true, item: safeItem }),
+        };
+      }
+      const result = await ddb.send(new GetCommand({ TableName: tableName, Key: { userId, tenantId } }));
+      const item = result.Item || {};
+      if (!item.emailAddress || item.password !== password) {
+        return {
+          statusCode: 401,
+          headers: corsHeaders,
+          body: JSON.stringify({ message: 'Invalid email or password' }),
+        };
+      }
+
+      const safeItem = { ...item };
+      delete safeItem.password;
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({ success: true, item: safeItem }),
+      };
+    } catch (error) {
+      console.error('Profile login failed', error);
+      return {
+        statusCode: 500,
+        headers: corsHeaders,
+        body: JSON.stringify({ message: 'Login failed' }),
+      };
+    }
+  }
+
   const item = {
     userId: body.userId || body.emailAddress || 'unknown@example.com',
     tenantId,
@@ -143,6 +225,7 @@ export const handler = async (event) => {
     department: body.department || '',
     idCardNumber: body.idCardNumber || '',
     emailAddress: body.emailAddress || body.email || '',
+    password: body.password || '',
     profileImageUrl: body.profileImageUrl || '',
     profileImageKey: body.profileImageKey || '',
     createdAt: body.createdAt || new Date().toISOString(),
@@ -150,12 +233,24 @@ export const handler = async (event) => {
   };
 
   try {
-    await ddb.send(new PutCommand({ TableName: tableName, Item: item }));
+    const profilesCollection = await getMongoCollection('user_profiles');
+    if (profilesCollection) {
+      await profilesCollection.updateOne(
+        { userId: item.userId, tenantId: item.tenantId },
+        { $set: { ...item, _id: `${item.tenantId}:${item.userId}` } },
+        { upsert: true }
+      );
+    } else {
+      await ddb.send(new PutCommand({ TableName: tableName, Item: item }));
+    }
+
+    const savedItem = { ...item };
+    delete savedItem.password;
 
     return {
       statusCode: 201,
       headers: corsHeaders,
-      body: JSON.stringify({ success: true, item }),
+      body: JSON.stringify({ success: true, item: savedItem }),
     };
   } catch (error) {
     console.error('Profile save failed', error);

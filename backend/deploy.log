@@ -1,0 +1,33 @@
+
+	Managed S3 bucket: aws-sam-cli-managed-default-samclisourcebucket-vaj00qpavrhm
+	Auto resolution of buckets can be turned off by setting resolve_s3=False
+	To use a specific S3 bucket, set --s3-bucket=<bucket_name>
+	Above settings can be stored in samconfig.toml
+
+	File with same data already exists at engineer-movement-report/2c0c3f3153541f34030534ca8f55ffe3, skipping upload
+
+	File with same data already exists at engineer-movement-report/76f9c5873d3a1cdf4ce6cc36e4919756, skipping upload
+
+	File with same data already exists at engineer-movement-report/84c271eba64957108b7b970ab61077e3, skipping upload
+
+	Deploying with following values
+	===============================
+	Stack name                   : engineer-movement-report
+	Region                       : us-east-1
+	Confirm changeset            : False
+	Disable rollback             : False
+	Deployment s3 bucket         : aws-sam-cli-managed-default-samclisourcebucket-vaj00qpavrhm
+	Capabilities                 : ["CAPABILITY_IAM"]
+	Parameter overrides          : {}
+	Signing Profiles             : {}
+
+Initiating deployment
+=====================
+
+
+	File with same data already exists at engineer-movement-report/d8790d84ecd2210e08d30436ca79a2c7.template, skipping upload
+
+
+Waiting for changeset to be created..
+
+Error: Failed to create changeset for the stack: engineer-movement-report, ex: Waiter ChangeSetCreateComplete failed: Waiter encountered a terminal failure state: For expression "Status" we matched expected path: "FAILED" Status: FAILED. Reason: The following hook(s)/validation failed: [AWS::EarlyValidation::ResourceExistenceCheck]. To troubleshoot Early Validation errors, use the DescribeEvents API for detailed failure information.
