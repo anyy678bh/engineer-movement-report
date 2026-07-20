@@ -25,8 +25,8 @@ const loginMessage = document.getElementById('loginMessage');
 const profileMessage = document.getElementById('profileMessage');
 const registerMessage = document.getElementById('registerMessage');
 
-async function getEntries() {
-  const result = await loadReportsFromApi();
+async function getEntries(limit = 7) {
+  const result = await loadReportsFromApi(null, limit);
   return Array.isArray(result.items) ? result.items.map(normalizeApiEntry).filter(Boolean) : [];
 }
 
@@ -118,13 +118,13 @@ async function syncReportToApi(entry) {
   }
 }
 
-async function loadReportsFromApi(startToken = null) {
+async function loadReportsFromApi(startToken = null, limit = 7) {
   const apiBaseUrl = window.API_BASE_URL || '';
   if (!apiBaseUrl) return { items: [], nextToken: null };
   try {
     const url = new URL(`${apiBaseUrl}/reports`);
     url.searchParams.set('tenantId', window.DEFAULT_TENANT_ID);
-    url.searchParams.set('limit', '7');
+    url.searchParams.set('limit', String(limit));
     if (startToken) url.searchParams.set('startKey', startToken);
     const response = await fetch(url);
     if (!response.ok) throw new Error('Unable to load reports from API');
@@ -388,8 +388,150 @@ async function renderRecentEntriesPage() {
   recentEntriesList.innerHTML = filteredEntries.slice(0, 7).map(buildEntryMarkup).join('');
 }
 
+function buildAnalyticsBars(stats) {
+  const maxCount = Math.max(...stats.map((item) => item.count), 1);
+  return stats
+    .map((item) => {
+      const width = Math.round((item.count / maxCount) * 100);
+      return `
+        <div class="chart-row">
+          <span class="chart-label">${item.company}</span>
+          <div class="chart-bar" style="width:${width}%">${item.count}</div>
+        </div>
+      `;
+    })
+    .join('');
+}
+
+function formatHours(hours) {
+  return Number.isFinite(hours) ? `${hours.toFixed(1)}h` : '0h';
+}
+
 async function renderAnalyticsPage() {
-  return null;
+  const analyticsForm = document.getElementById('analyticsQueryForm');
+  const periodSelect = document.getElementById('analysisPeriod');
+  const companyInput = document.getElementById('analysisCompany');
+  const dateInput = document.getElementById('analysisDate');
+  const weekInput = document.getElementById('analysisWeek');
+  const summaryContainer = document.getElementById('analyticsSummary');
+  const chartContainer = document.getElementById('analyticsChart');
+  const topPerformersContainer = document.getElementById('analyticsTopPerformers');
+  const tableWrap = document.getElementById('analyticsTableWrap');
+  const clearBtn = document.getElementById('clearAnalyticsBtn');
+  if (!analyticsForm || !summaryContainer || !chartContainer || !topPerformersContainer || !tableWrap) return;
+
+  const entries = await getEntries(1000);
+  const normalizeDate = (value) => value.toString().slice(0, 10);
+
+  const calculateWeekOfMonth = (dateString) => {
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return null;
+    return Math.ceil(date.getDate() / 7);
+  };
+
+  const renderResults = () => {
+    const period = periodSelect?.value || 'month';
+    const companyQuery = (companyInput?.value || '').trim().toLowerCase();
+    const selectedMonth = dateInput?.value || '';
+    const selectedWeek = Number(weekInput?.value || 0);
+
+    const filteredEntries = entries.filter((entry) => {
+      const companyName = String(entry.companyName || '').toLowerCase();
+      const matchesCompany = !companyQuery || companyName.includes(companyQuery);
+      if (!matchesCompany) return false;
+      if (!selectedMonth) return true;
+      const entryMonth = (entry.date || '').slice(0, 7);
+      if (period === 'month') {
+        return entryMonth === selectedMonth;
+      }
+      if (period === 'week') {
+        const weekOfMonth = calculateWeekOfMonth(entry.date || '');
+        return entryMonth === selectedMonth && selectedWeek > 0 ? weekOfMonth === selectedWeek : entryMonth === selectedMonth;
+      }
+      return true;
+    });
+
+    if (!filteredEntries.length) {
+      summaryContainer.innerHTML = '<div class="empty">No analytics data available for the selected criteria.</div>';
+      chartContainer.innerHTML = '';
+      topPerformersContainer.innerHTML = '';
+      tableWrap.innerHTML = '';
+      return;
+    }
+
+    const totalVisits = filteredEntries.length;
+    const totalHours = filteredEntries.reduce((sum, entry) => sum + (Number(entry.hoursSpent) || 0), 0);
+    const uniqueCompanies = [...new Set(filteredEntries.map((entry) => entry.companyName || 'Unknown'))];
+    const averageHours = totalVisits ? totalHours / totalVisits : 0;
+
+    const visitsByCompany = filteredEntries.reduce((acc, entry) => {
+      const company = entry.companyName || 'Unknown';
+      acc[company] = (acc[company] || 0) + 1;
+      return acc;
+    }, {});
+
+    const companyStats = Object.entries(visitsByCompany)
+      .map(([company, count]) => ({ company, count }))
+      .sort((a, b) => b.count - a.count);
+
+    summaryContainer.innerHTML = `
+      <div class="analytics-summary-grid">
+        <div><strong>Total visits</strong><p>${totalVisits}</p></div>
+        <div><strong>Total hours</strong><p>${formatHours(totalHours)}</p></div>
+        <div><strong>Average hours</strong><p>${formatHours(averageHours)}</p></div>
+        <div><strong>Companies</strong><p>${uniqueCompanies.length}</p></div>
+      </div>
+    `;
+
+    chartContainer.innerHTML = `
+      <div class="chart-summary-list">
+        ${buildAnalyticsBars(companyStats.slice(0, 6))}
+      </div>
+    `;
+
+    topPerformersContainer.innerHTML = `
+      <h3>Top companies</h3>
+      <ol>
+        ${companyStats.slice(0, 5).map((item) => `<li>${item.company}: ${item.count} visit${item.count === 1 ? '' : 's'}</li>`).join('')}
+      </ol>
+    `;
+
+    tableWrap.innerHTML = `
+      <h3>Matching entries</h3>
+      <div class="analytics-table">
+        ${filteredEntries
+          .map(
+            (entry) => `
+              <div class="analytics-row">
+                <span>${normalizeDate(entry.date)}</span>
+                <span>${entry.companyName || 'Unknown'}</span>
+                <span>${entry.engineerName || '—'}</span>
+                <span>${entry.location || '—'}</span>
+                <span>${formatHours(Number(entry.hoursSpent) || 0)}</span>
+              </div>
+            `,
+          )
+          .join('')}
+      </div>
+    `;
+  };
+
+  analyticsForm.onsubmit = (event) => {
+    event.preventDefault();
+    renderResults();
+  };
+
+  if (clearBtn) {
+    clearBtn.onclick = () => {
+      if (periodSelect) periodSelect.value = 'month';
+      if (companyInput) companyInput.value = '';
+      if (dateInput) dateInput.value = '';
+      if (weekInput) weekInput.value = '';
+      renderResults();
+    };
+  }
+
+  renderResults();
 }
 
 async function renderProfilePage() {
