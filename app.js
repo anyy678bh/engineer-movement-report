@@ -1,6 +1,5 @@
 const form = document.getElementById('movementForm');
 const entriesList = document.getElementById('entriesList');
-const clearBtn = document.getElementById('clearBtn');
 const formStatus = document.getElementById('formStatus');
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
@@ -18,7 +17,6 @@ const engineerCountInput = document.getElementById('otherEngineerCount');
 const engineerCountSubmitBtn = document.getElementById('engineerCountSubmitBtn');
 const engineerCancelBtn = document.getElementById('engineerCancelBtn');
 
-const resetPasswordBtn = document.getElementById('resetPasswordBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 let pendingEntry = null;
 const loginMessage = document.getElementById('loginMessage');
@@ -95,7 +93,6 @@ async function finalizePendingEntry() {
   hideEngineerDialog();
   const synced = await syncReportToApi(entry);
   await renderEntries();
-  await renderCompanyChart();
   if (form) form.reset();
   if (synced) setFormStatus('Report saved successfully and synced.', 'success');
   else setFormStatus('Report could not be saved. Please try again later.', 'error');
@@ -275,15 +272,6 @@ function normalizeEmail(value) {
   return String(value || '').trim().toLowerCase();
 }
 
-function getAttributeMap(attributes = []) {
-  return (attributes || []).reduce((accumulator, attribute) => {
-    if (attribute && attribute.Name) {
-      accumulator[attribute.Name] = attribute.Value;
-    }
-    return accumulator;
-  }, {});
-}
-
 function setFormStatus(message, type = 'success') {
   if (!formStatus) return;
   if (!message) { formStatus.textContent = ''; formStatus.className = 'status-pill'; return; }
@@ -336,10 +324,6 @@ function normalizeApiEntry(item) {
     otherEngineerNames: Array.isArray(item.otherEngineerNames) ? item.otherEngineerNames : [],
     createdAt: item.createdAt || item.date || '',
   };
-}
-
-async function renderCompanyChart() {
-  return null;
 }
 
 async function renderEntries() {
@@ -601,23 +585,6 @@ async function handleProfileUpdate(event) {
   renderProfilePage();
 }
 
-function setResetMode(isConfirmMode) { /* unchanged */ }
-function initializePasswordResetForm() { /* unchanged */ }
-function handleResetPassword() { /* unchanged */ }
-async function handleResetRequest(event) { /* unchanged */ }
-async function handlePasswordReset(event) { /* unchanged */ }
-function buildProfileFromUser(user, fallbackEmail = '') {
-  return {
-    fullName: user?.fullName || '',
-    department: user?.department || '',
-    idCardNumber: user?.idCardNumber || '',
-    emailAddress: user?.emailAddress || fallbackEmail,
-    profileImageData: '',
-    profileImageUrl: '',
-    profileImageKey: '',
-  };
-}
-
 async function handleRegister(event) {
   event.preventDefault();
 
@@ -774,13 +741,9 @@ if (form) {
   };
 }
 
-if (clearBtn) clearBtn.addEventListener('click', () => {
-  setFormStatus('Clearing reports is not supported in this backend-only mode.', 'error');
-});
 if (loginForm) loginForm.addEventListener('submit', handleLogin);
 if (registerForm) registerForm.addEventListener('submit', handleRegister);
 if (profileForm) profileForm.addEventListener('submit', handleProfileUpdate);
-if (resetPasswordBtn) resetPasswordBtn.addEventListener('click', handleResetPassword);
 if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
 if (transportTypeSelect) transportTypeSelect.addEventListener('change', updateVehiclePlateRequirement);
 
@@ -824,7 +787,6 @@ if (engineerCancelBtn) {
 initializeEditProfileForm();
 updateVehiclePlateRequirement();
 renderEntries();
-renderCompanyChart();
 renderHomeGreeting();
 renderRecentEntriesPage();
 renderAnalyticsPage();
