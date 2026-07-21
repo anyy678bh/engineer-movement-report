@@ -677,7 +677,7 @@ async function handleRegister(event) {
     await saveProfile(profile);
 
     if (registerMessage) registerMessage.textContent = 'Account created successfully. Redirecting...';
-    window.location.href = 'profile.html';
+    window.location.href = 'index.html';
   } catch (error) {
     console.error('AWS signup failed:', error);
     if (registerMessage) registerMessage.textContent = error.message || 'Account creation failed.';
@@ -728,7 +728,7 @@ async function handleLogin(event) {
     await saveProfile(profile);
 
     if (loginMessage) loginMessage.textContent = 'Login successful. Redirecting...';
-    window.location.href = 'profile.html';
+    window.location.href = 'index.html';
   } catch (error) {
     console.error('AWS login failed:', error);
     if (loginMessage) loginMessage.textContent = error.message || 'Unable to sign in right now.';
