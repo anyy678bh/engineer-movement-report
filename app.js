@@ -306,6 +306,41 @@ function hideMotivationalQuote() {
   quoteElement.classList.add('hidden');
 }
 
+async function deleteReportFromApi(reportId) {
+  const apiBaseUrl = window.API_BASE_URL || '';
+  if (!apiBaseUrl || !reportId) return null;
+  try {
+    const url = new URL(`${apiBaseUrl}/reports`);
+    url.searchParams.set('tenantId', window.DEFAULT_TENANT_ID);
+    url.searchParams.set('reportId', reportId);
+    const response = await fetch(url, { method: 'DELETE' });
+    if (!response.ok) throw new Error('API delete failed');
+    return await response.json();
+  } catch (error) {
+    console.warn('Report delete failed:', error);
+    return null;
+  }
+}
+
+async function handleDeleteEntryAction(event) {
+  const button = event.target.closest('.delete-entry-button');
+  if (!button) return;
+  const reportId = button.dataset.entryId;
+  if (!reportId) return;
+  if (!confirm('Delete this report? This action cannot be undone.')) return;
+
+  const result = await deleteReportFromApi(reportId);
+  if (result?.success) {
+    setFormStatus('Report deleted successfully.', 'success');
+    await renderEntries();
+    if (document.getElementById('recentEntriesList')) {
+      await renderRecentEntriesPage();
+    }
+  } else {
+    setFormStatus('Unable to delete the report. Please try again.', 'error');
+  }
+}
+
 function buildEntryMarkup(entry) {
   const company = entry.companyName || entry.companyNameAttended || 'Unknown company';
   const date = entry.date || entry.createdAt || 'N/A';
@@ -319,8 +354,11 @@ function buildEntryMarkup(entry) {
   const otherEngineerNames = Array.isArray(entry.otherEngineerNames) && entry.otherEngineerNames.length? entry.otherEngineerNames.join(', ') : (entry.otherEngineerName? entry.otherEngineerName : '');
   const otherEngineer = otherEngineerNames? `<p><strong>Other Engineers:</strong> ${otherEngineerNames}</p>` : '';
   return `
-    <article class="entry">
-      <h3>${company}</h3>
+    <article class="entry" data-entry-id="${entry.reportId || entry.id}">
+      <div class="entry-header">
+        <h3>${company}</h3>
+        <button type="button" class="delete-entry-button" data-entry-id="${entry.reportId || entry.id}">Delete</button>
+      </div>
       <p><strong>Date:</strong> ${date}</p>
       <p><strong>Location:</strong> ${location}</p>
       ${people}
@@ -338,6 +376,9 @@ function normalizeApiEntry(item) {
   if (!item || typeof item !== 'object') return null;
   return {
     id: item.id || item.reportId || item.sk || item.pk || `${item.date || ''}-${item.companyName || ''}`,
+    reportId: item.reportId || item.id || item.sk || item.pk || `${item.date || ''}-${item.companyName || ''}`,
+    pk: item.pk || '',
+    sk: item.sk || '',
     date: item.date || item.createdAt || '',
     companyName: item.companyName || item.companyNameAttended || '',
     engineerName: item.engineerName || '',
@@ -773,6 +814,10 @@ if (registerForm) registerForm.addEventListener('submit', handleRegister);
 if (profileForm) profileForm.addEventListener('submit', handleProfileUpdate);
 if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
 if (transportTypeSelect) transportTypeSelect.addEventListener('change', updateVehiclePlateRequirement);
+
+const recentEntriesList = document.getElementById('recentEntriesList');
+if (entriesList) entriesList.addEventListener('click', handleDeleteEntryAction);
+if (recentEntriesList) recentEntriesList.addEventListener('click', handleDeleteEntryAction);
 
 if (engineerNoBtn) {
   engineerNoBtn.onclick = async () => {

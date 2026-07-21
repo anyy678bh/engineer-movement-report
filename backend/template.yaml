@@ -88,6 +88,12 @@ Resources:
             RestApiId: !Ref ReportsApi
             Path: /reports
             Method: post
+        DeleteReportApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ReportsApi
+            Path: /reports
+            Method: delete
 
   UserProfilesTable:
     Type: AWS::DynamoDB::Table

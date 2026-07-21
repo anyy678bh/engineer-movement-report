@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, PutCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
 import { MongoClient } from 'mongodb';
 
 const client = new DynamoDBClient({});
@@ -23,7 +23,7 @@ const corsHeaders = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-  'Access-Control-Allow-Methods': 'OPTIONS,GET,POST',
+  'Access-Control-Allow-Methods': 'OPTIONS,GET,POST,DELETE',
 };
 
 export const handler = async (event) => {
@@ -36,6 +36,43 @@ export const handler = async (event) => {
   }
 
   const tableName = process.env.REPORTS_TABLE;
+  const reportsCollection = await getMongoCollection('reports');
+
+  if (event.httpMethod === 'DELETE') {
+    const tenantId = event.queryStringParameters?.tenantId || 'default';
+    const reportId = event.queryStringParameters?.reportId;
+    if (!reportId) {
+      return {
+        statusCode: 400,
+        headers: corsHeaders,
+        body: JSON.stringify({ success: false, message: 'reportId is required' }),
+      };
+    }
+
+    if (reportsCollection) {
+      await reportsCollection.deleteOne({ tenantId, reportId });
+      return {
+        statusCode: 200,
+        headers: corsHeaders,
+        body: JSON.stringify({ success: true }),
+      };
+    }
+
+    await ddb.send(new DeleteCommand({
+      TableName: tableName,
+      Key: {
+        pk: `tenant#${tenantId}`,
+        sk: `report#${reportId}`,
+      },
+    }));
+
+    return {
+      statusCode: 200,
+      headers: corsHeaders,
+      body: JSON.stringify({ success: true }),
+    };
+  }
+
   const body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body || {};
   const tenantId = body.tenantId || 'default';
   const reportId = body.reportId || crypto.randomUUID();
@@ -60,7 +97,6 @@ export const handler = async (event) => {
     createdAt,
   };
 
-  const reportsCollection = await getMongoCollection('reports');
   if (reportsCollection) {
     await reportsCollection.updateOne(
       { tenantId, reportId },

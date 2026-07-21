@@ -715,6 +715,29 @@ button:hover {
   color: var(--muted);
 }
 
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.delete-entry-button {
+  border: 1px solid rgba(248, 250, 252, 0.18);
+  background: transparent;
+  color: var(--danger);
+  padding: 0.55rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.delete-entry-button:hover {
+  background: rgba(251, 146, 60, 0.12);
+  transform: translateY(-1px);
+}
+
 .empty {
   text-align: center;
   color: var(--muted);
