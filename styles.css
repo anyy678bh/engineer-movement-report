@@ -649,6 +649,16 @@ button:hover {
   color: var(--danger);
 }
 
+.motivational-quote {
+  margin-top: 0.75rem;
+  font-style: italic;
+  color: var(--text);
+  background: rgba(102, 163, 255, 0.08);
+  border-left: 4px solid var(--success);
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+}
+
 .section-head {
   display: flex;
   justify-content: space-between;

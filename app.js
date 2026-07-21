@@ -94,8 +94,12 @@ async function finalizePendingEntry() {
   const synced = await syncReportToApi(entry);
   await renderEntries();
   if (form) form.reset();
-  if (synced) setFormStatus('Report saved successfully and synced.', 'success');
-  else setFormStatus('Report could not be saved. Please try again later.', 'error');
+  if (synced) {
+    setFormStatus('Report saved successfully and synced.', 'success');
+    showMotivationalQuote();
+  } else {
+    setFormStatus('Report could not be saved. Please try again later.', 'error');
+  }
 }
 
 async function syncReportToApi(entry) {
@@ -274,9 +278,32 @@ function normalizeEmail(value) {
 
 function setFormStatus(message, type = 'success') {
   if (!formStatus) return;
-  if (!message) { formStatus.textContent = ''; formStatus.className = 'status-pill'; return; }
+  if (!message) { formStatus.textContent = ''; formStatus.className = 'status-pill'; hideMotivationalQuote(); return; }
   formStatus.textContent = message;
   formStatus.className = `status-pill ${type}`;
+}
+
+const MOTIVATIONAL_QUOTES = [
+  'Great work! Every report is progress toward smarter operations.',
+  'Report submitted — keep the momentum going!',
+  'Nice job! Your updates help the team stay ahead.',
+  'Every entry makes your day more organized.',
+  'Well done. You’re building a stronger field service record.'
+];
+
+function showMotivationalQuote() {
+  const quoteElement = document.getElementById('motivationalQuote');
+  if (!quoteElement) return;
+  const randomIndex = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
+  quoteElement.textContent = MOTIVATIONAL_QUOTES[randomIndex];
+  quoteElement.classList.remove('hidden');
+}
+
+function hideMotivationalQuote() {
+  const quoteElement = document.getElementById('motivationalQuote');
+  if (!quoteElement) return;
+  quoteElement.textContent = '';
+  quoteElement.classList.add('hidden');
 }
 
 function buildEntryMarkup(entry) {
